@@ -44,6 +44,12 @@
     .pw-box button:hover{opacity:0.85}
     .pw-error-msg{font-size:12px;color:var(--red);margin-top:8px;min-height:18px}
     @keyframes shake{0%,100%{transform:translateX(0)}20%,60%{transform:translateX(-6px)}40%,80%{transform:translateX(6px)}}
+    .vendor-tabs{display:flex;gap:8px;margin-bottom:24px}
+    .vendor-tab{padding:10px 20px;border:1px solid var(--border-bright);border-radius:var(--radius-sm);background:var(--surface-2);color:var(--text-dim);font-family:var(--font);font-size:13px;font-weight:600;cursor:pointer;transition:all 0.15s ease}
+    .vendor-tab:hover{color:var(--text);background:var(--surface-3)}
+    .vendor-tab.active{background:var(--accent-glow);color:var(--accent);border-color:var(--accent)}
+    .vendor-subpage{display:none}
+    .vendor-subpage.active{display:block}
     * { margin:0; padding:0; box-sizing:border-box; }
     body { font-family:var(--font); background:var(--bg); color:var(--text); min-height:100vh; -webkit-font-smoothing:antialiased; }
     .app { display:flex; min-height:100vh; }
@@ -259,7 +265,6 @@
       <button class="nav-item" onclick="goToSlide(5)"><span class="nav-icon">&#9881;</span> JefAI Platform</button>
       <button class="nav-item" onclick="goToSlide(6)"><span class="nav-icon">&#9670;</span> Vendors</button>
       <button class="nav-item" onclick="goToSlide(7)"><span class="nav-icon">&#9636;</span> Timeline</button>
-      <button class="nav-item" onclick="goToSlide(8)"><span class="nav-icon">&#8674;</span> Vendor Workflow</button>
       <div class="theme-toggle">
         <span id="theme-label">&#9728;&#65039; Light</span>
         <label class="toggle-switch">
@@ -279,7 +284,6 @@
         <button onclick="goToSlide(5)">JefAI</button>
         <button onclick="goToSlide(6)">Vendors</button>
         <button onclick="goToSlide(7)">Timeline</button>
-        <button onclick="goToSlide(8)">Workflow</button>
       </div>
 
       <!-- SLIDE 0: DASHBOARD -->
@@ -532,6 +536,12 @@
       <!-- SLIDE 6: VENDORS -->
       <div class="slide" id="slide6">
         <div class="page-header"><h1>Vendor &amp; Third-Party Management</h1><p>Gatekeeper workflow, vendor approvals, pipeline, and key policies. <span class="badge badge-dim" style="vertical-align:middle">Owner: Aaron</span></p></div>
+        <div class="vendor-tabs">
+          <button class="vendor-tab active" onclick="showVendorTab(0)">Vendor Tracker</button>
+          <button class="vendor-tab" onclick="showVendorTab(1)">Approval Workflow</button>
+        </div>
+        <!-- Sub-page 0: Vendor Tracker -->
+        <div class="vendor-subpage active" id="vendorSub0">
         <div class="section"><div class="section-header"><h2>Target Workflow (Sequential)</h2></div><div class="section-body"><div class="flow-row">
           <div class="flow-step" style="border-top:2px solid var(--accent)"><h4>AI Review</h4><p>Efficacy + Technical AI Specs</p></div>
           <div class="flow-step" style="border-top:2px solid var(--teal)"><h4>Security</h4><p>Pen tests, SOC2, architecture</p></div>
@@ -569,6 +579,108 @@
             <tr><td><strong>Zendesk</strong></td><td>Research</td><td>Support platform (AI: OpenAI/Claude)</td><td><span class="badge badge-yellow">In Review</span></td><td>Hold pending LLM priority decision</td><td>Aaron</td></tr>
             <tr><td><strong>QuantFox</strong></td><td>T. Larkman / F. Hart</td><td>Quant research tooling (France-based)</td><td><span class="badge badge-yellow">In Review</span></td><td>Confirm data sent and region risk</td><td>Aaron</td></tr>
           </tbody></table></div>
+        </div>
+        </div>
+        <!-- Sub-page 1: Approval Workflow -->
+        <div class="vendor-subpage" id="vendorSub1">
+        <div class="page-header" style="padding-top:0"><h1>AI Vendor Approval Workflow</h1><p>Sequential gate-based review process — each step completes before the next begins. Click a stage to see detailed requirements.</p></div>
+        <div class="wf-pipeline">
+          <div class="wf-stage s-ai active" onclick="showWfPanel(0)"><div class="wf-stage-inner"><div class="wf-stage-num">01</div><div class="wf-stage-title">AI Review</div><div class="wf-stage-owner">Aaron Purewal (Gatekeeper)</div><div class="wf-stage-desc">Efficacy, technical AI specs, decision framework</div></div></div>
+          <div class="wf-arrow">&rarr;</div>
+          <div class="wf-stage s-sec" onclick="showWfPanel(1)"><div class="wf-stage-inner"><div class="wf-stage-num">02</div><div class="wf-stage-title">Security</div><div class="wf-stage-owner">Daniel / Alex</div><div class="wf-stage-desc">Pen tests, SOC2, architecture review</div></div></div>
+          <div class="wf-arrow">&rarr;</div>
+          <div class="wf-stage s-legal" onclick="showWfPanel(2)"><div class="wf-stage-inner"><div class="wf-stage-num">03</div><div class="wf-stage-title">Legal</div><div class="wf-stage-owner">Amanda + Adam (J-Fin)</div><div class="wf-stage-desc">Contract clauses, AI terms, regional compliance</div></div></div>
+          <div class="wf-arrow">&rarr;</div>
+          <div class="wf-stage s-vr" onclick="showWfPanel(3)"><div class="wf-stage-inner"><div class="wf-stage-num">04</div><div class="wf-stage-title">Vendor Risk</div><div class="wf-stage-owner">Final Sign-Off</div><div class="wf-stage-desc">Enterprise risk assessment &amp; approval</div></div></div>
+        </div>
+        <!-- Panel 0: AI Review -->
+        <div class="wf-detail-panel active" id="wfPanel0">
+          <div class="section"><div class="section-header"><h2>Stage 1 — AI Review (Gatekeeper)</h2><span class="badge badge-blue">Owner: Aaron Purewal</span></div><div class="section-body">
+            <p style="margin-bottom:16px">Nothing moves to Security, Legal, or Vendor Risk until this review is complete. Evaluates efficacy, technical AI specifications, business justification, and MNPI exposure.</p>
+            <div class="three-col">
+              <div class="inner-card" style="border-top:2px solid var(--green)"><h4 style="color:var(--green)">&#10003; Approve If</h4><ul><li>Clear business case</li><li>No obvious redundancy</li><li>Specs acceptable or vendor willing to use Jefferies endpoints</li><li>POC with defined scope &amp; data restrictions</li></ul></div>
+              <div class="inner-card" style="border-top:2px solid var(--yellow)"><h4 style="color:var(--yellow)">&#9208; Slow Down / Escalate If</h4><ul><li>Data hosted outside Jefferies AWS/Azure</li><li>Unclear subprocessors or restricted regions</li><li>Security hasn't reviewed AI functionality</li><li>MNPI exposure without controls</li></ul></div>
+              <div class="inner-card" style="border-top:2px solid var(--red)"><h4 style="color:var(--red)">&#10007; Deny If</h4><ul><li>Blatant redundancy ("we have 50 products that do this")</li><li>Poor/outdated technology</li><li>Clear compliance violations</li></ul></div>
+            </div>
+            <div class="callout callout-blue" style="margin-top:16px"><strong>Hany's guidance:</strong> "Don't hold back. Balance velocity vs. governance. No-brainers, approve them. Tell requesters we're building a new process — they may need to do retroactive actions later."</div>
+            <div class="inner-card" style="margin-top:16px;border-top:2px solid var(--accent)"><h4 style="color:var(--accent)">Gatekeeper Checklist</h4><ul class="wf-checklist">
+              <li><strong>Is Jefferies buying a tool/platform or licensing data?</strong> Different paths apply.</li>
+              <li><strong>Research the tool online</strong> — confirm a basic understanding of how it's being used.</li>
+              <li><strong>Has the tool been approved from the AI perspective?</strong> Check GEP/JEDI notes.</li>
+              <li><strong>Business justification:</strong> Why can't existing tools be used?</li>
+              <li><strong>LLM architecture:</strong> What models, where hosted, subprocessors?</li>
+              <li><strong>Data handling:</strong> Retention policy, encryption, BYOK capability?</li>
+              <li><strong>MNPI exposure:</strong> Does data leave Jefferies AWS/Azure?</li>
+              <li><strong>Peer adoption:</strong> Used by Goldman, JPM, or Morgan Stanley?</li>
+              <li><strong>Geographic restrictions:</strong> Users in mainland China? Flag for AI SME.</li>
+              <li><strong>What countries will JEF users be located in?</strong> Check DPA requirements if outside US.</li>
+            </ul></div>
+            <div class="inner-card" style="margin-top:12px;border-top:2px solid var(--orange)"><h4 style="color:var(--orange)">Regulatory &amp; Audit Context</h4><ul>
+              <li>SEC and global regulators incoming (Dubai already painful)</li><li>Regulators: "Tell us how you're using every AI-enabled software"</li><li>Australian regulator audit inquiry in progress</li><li>Need clear accountability for AI outcomes</li><li>Annual recertification: unchanged usage? No additional data?</li><li>Priority: stop new request leakage, then document existing tools</li>
+            </ul><div class="callout callout-yellow" style="margin-top:12px"><strong>Watch Out:</strong> POC contract friction, scope creep into Legal, questionnaire sign-off, and document everything for audit readiness.</div></div>
+          </div></div>
+        </div>
+        <!-- Panel 1: Security -->
+        <div class="wf-detail-panel" id="wfPanel1">
+          <div class="section"><div class="section-header"><h2>Stage 2 — Security Review</h2><span class="badge badge-teal">Owner: Daniel / Alex</span></div><div class="section-body">
+            <p style="margin-bottom:16px">After AI Review approval, the vendor proceeds to Security for technical security assessment. Aaron provides security notes and conditions from Stage 1.</p>
+            <div class="inner-card" style="border-top:2px solid var(--teal)"><h4 style="color:var(--teal)">Security Review Scope</h4><ul class="wf-checklist">
+              <li><strong>Penetration testing</strong> — vendor infrastructure and application layer</li><li><strong>SOC2 Type II</strong> — current certification status and scope</li><li><strong>Architecture review</strong> — data flows, subprocessors, hosting locations</li><li><strong>FedRAMP authorization</strong> — if applicable for cloud services</li><li><strong>Encryption</strong> — in-transit and at-rest, customer-managed keys (BYOK)</li><li><strong>Access controls</strong> — admin-level model access, MFA, hardware key 2FA</li><li><strong>Network controls</strong> — egress restrictions, endpoint allowlisting</li>
+            </ul></div>
+            <div class="inner-card" style="margin-top:12px;border-top:2px solid var(--teal)"><h4 style="color:var(--teal)">Security Notes from AI Review (Passed Forward)</h4><p style="font-size:12.5px;margin-bottom:10px">Standard conditions Aaron attaches when passing to Security:</p><div class="two-col">
+              <div class="inner-card"><h4>Vendor SaaS / Hosted Tool</h4><ul><li>Dedicated tenant requirement</li><li>BYOK support</li><li>Zero-day retention on LLMs</li><li>Disclosure of all third-party models</li><li>Filter enable/disable capability</li></ul></div>
+              <div class="inner-card"><h4>Jefferies-Hosted Tool</h4><ul><li>Must be hosted in Jefferies environment only</li><li>Vendor must redirect LLM API calls to Jefferies endpoints</li><li>No data egress outside firm infrastructure</li></ul></div>
+            </div></div>
+          </div></div>
+        </div>
+        <!-- Panel 2: Legal -->
+        <div class="wf-detail-panel" id="wfPanel2">
+          <div class="section"><div class="section-header"><h2>Stage 3 — Legal Review</h2><span class="badge badge-purple">Owner: Amanda Kline + Adam (J-Fin)</span></div><div class="section-body">
+            <p style="margin-bottom:16px">After AI and Security approval, Legal reviews contract terms. Amanda's AI Cheatsheet defines the standard questions, contracting terms, and sample clauses for AI vendor agreements.</p>
+            <div class="callout callout-blue" style="margin-bottom:16px"><strong>MNPI Default Policy:</strong> "No MNPI" for all AI contracts unless specific technical controls are confirmed. Complete prohibition on MNPI going outside the firm.</div>
+            <div class="inner-card" style="border-top:2px solid var(--purple)"><h4 style="color:var(--purple)">Legal Triage — "What Do I Do When I Receive an AI Contract?"</h4><div class="two-col" style="margin-top:10px">
+              <div class="inner-card"><h4>Jefferies Buying a Tool/Platform</h4><ul><li>Has it been approved from the AI perspective by Aaron Purewal?</li><li>Check GEP/JEDI for additional security terms</li><li>Is it vendor-hosted (SaaS) or Jefferies-hosted?</li><li>What countries will JEF users be located in?</li><li>If non-US users, check DPA requirements and server hosting location</li><li>If Anthropic agreement — flag for AI SME if users in unlisted countries</li></ul></div>
+              <div class="inner-card"><h4>Jefferies Buying Data from a Vendor</h4><ul><li>Does the vendor platform have AI functionality available?</li><li>Does the vendor use AI to collect or process the data?</li><li>What countries will JEF users be located in?</li></ul></div>
+            </div>
+            <div class="inner-card" style="margin-top:10px"><h4>Consultant / Managed Services (Not Staff Aug)</h4><ul><li>Is the vendor/consultant using AI tools to provide their services?</li><li>If yes — in their environment or Jefferies? Default: AI in JEF environments for JEF data.</li><li>Who operates the AI tools? Consultant only, Jefferies only, or both?</li></ul></div></div>
+            <div class="inner-card" style="margin-top:16px;border-top:2px solid var(--purple)"><h4 style="color:var(--purple)">AI Contracting Terms — Sample Clauses</h4><p style="font-size:12.5px;margin-bottom:12px;color:var(--text-dim)">Standard terms Legal should include in AI vendor agreements (from Amanda's cheatsheet):</p><div class="wf-terms-grid">
+              <div class="wf-term-card"><h5>1. Dedicated Tenant</h5><p>Vendor stands up a dedicated instance for Jefferies use only during the term.</p></div>
+              <div class="wf-term-card"><h5>2. Bring Your Own Key (BYOK)</h5><p>All customer data encrypted using a Jefferies-managed key. Vendor cannot decrypt without Jefferies authorization.</p></div>
+              <div class="wf-term-card"><h5>3. Zero-Day Retention</h5><p>LLM inputs/outputs not retained, stored, cached, or used for training. Transient processing only; deleted within 24 hours.</p></div>
+              <div class="wf-term-card"><h5>4. Third-Party Model Disclosure</h5><p>Vendor must disclose all LLM providers, model names, versions, hosting regions. 30 days' notice before any model change.</p></div>
+              <div class="wf-term-card"><h5>5. Security Filters</h5><p>Vendor provides admin controls for automated security filters on inputs/outputs. Filters cannot be disabled without Jefferies approval.</p></div>
+              <div class="wf-term-card"><h5>6. Hosting in JEF Environment</h5><p>Platform hosted, deployed, and operated solely within Jefferies-controlled cloud (AWS/Azure/VPC/on-prem). No data egress.</p></div>
+              <div class="wf-term-card"><h5>7. API Redirect</h5><p>All LLM API calls routed exclusively through Jefferies-designated endpoints ("Customer AI Endpoints"). No direct vendor-to-LLM calls.</p></div>
+              <div class="wf-term-card"><h5>8. MNPI Segregation</h5><p>Strict logical and physical segregation of Jefferies MNPI. Tenant isolation, need-to-know access, background checks for vendor staff.</p></div>
+            </div></div>
+            <div class="inner-card" style="margin-top:16px;border-top:2px solid var(--purple)"><h4 style="color:var(--purple)">Additional Agreement Provisions</h4><ul>
+              <li><strong>MNPI upload restrictions:</strong> JEF business teams not permitted to upload MNPI — this is an internal guardrail; exceptions need Compliance + IT Sec approval</li>
+              <li><strong>MNPI segregation by vendor:</strong> Whether vendor can actually segregate MNPI depends on architecture — must be verified</li>
+              <li><strong>Vendor audit/governance:</strong> Performance benchmarks, bias and risk assessment, audit rights</li>
+              <li><strong>Termination rights (model changes):</strong> If vendor changes model providers, functionality, hosting locations</li>
+              <li><strong>Termination rights (risk/compliance):</strong> If JEF determines vendor AI practices pose reputational risk or compromise security/regulatory compliance</li>
+              <li><strong>Data retention variance:</strong> Check if LLM retention differs from the Information Security Addendum — vendors with third-party models may have different retention timelines</li>
+            </ul></div>
+            <div class="callout callout-yellow" style="margin-top:12px"><strong>POC Friction:</strong> Vendors increasingly want full contract negotiations upfront, creating double-work for Legal. Duration: up to 6 months (flexible).</div>
+          </div></div>
+        </div>
+        <!-- Panel 3: Vendor Risk -->
+        <div class="wf-detail-panel" id="wfPanel3">
+          <div class="section"><div class="section-header"><h2>Stage 4 — Vendor Risk (Final Sign-Off)</h2><span class="badge badge-green">Final Gate</span></div><div class="section-body">
+            <p style="margin-bottom:16px">After AI, Security, and Legal have all signed off, the vendor request moves to Vendor Risk for final enterprise risk assessment and approval.</p>
+            <div class="inner-card" style="border-top:2px solid var(--green)"><h4 style="color:var(--green)">Final Sign-Off Scope</h4><ul class="wf-checklist">
+              <li><strong>Enterprise risk classification</strong> — tier determination based on data sensitivity and business impact</li><li><strong>Compliance alignment</strong> — confirm adherence to Global Gen AI Policy and firm risk appetite</li><li><strong>Contractual completeness</strong> — all AI-specific clauses, MNPI protections, and termination rights in place</li><li><strong>Ongoing monitoring plan</strong> — annual recertification requirements defined</li><li><strong>Audit trail</strong> — documentation complete for SEC and regulatory review</li>
+            </ul></div>
+            <div class="inner-card" style="margin-top:12px;border-top:2px solid var(--green)"><h4 style="color:var(--green)">Post-Approval Requirements</h4><ul>
+              <li><strong>Annual recertification:</strong> "Are you still using this the same way? No additional data?"</li><li><strong>Change notifications:</strong> Vendor must notify 30 days before model or architecture changes</li><li><strong>Ongoing monitoring:</strong> Usage tracking, incident reporting, compliance review</li><li><strong>Hany cc'd</strong> on all approval/denial communications</li>
+            </ul></div>
+          </div></div>
+        </div>
+        <div class="section" style="margin-top:8px"><div class="section-header"><h2>Critical Policies (All Stages)</h2></div><div class="section-body"><div class="three-col">
+          <div class="inner-card" style="border-top:2px solid var(--red)"><h4 style="color:var(--red)">MNPI Policy</h4><p style="font-size:12.5px">MNPI is NEVER allowed in anything public or web-based unless within Jefferies' AWS or Azure instance. Complete prohibition on MNPI going outside the firm.</p></div>
+          <div class="inner-card" style="border-top:2px solid var(--purple)"><h4 style="color:var(--purple)">Legal Default</h4><p style="font-size:12.5px">"No MNPI" for all AI contracts unless specific technical controls are confirmed.</p></div>
+          <div class="inner-card" style="border-top:2px solid var(--orange)"><h4 style="color:var(--orange)">POC Standards</h4><p style="font-size:12.5px">Up to 6 months duration. Vendors increasingly want full contracts upfront — creates double-work for Legal.</p></div>
+        </div></div></div>
         </div>
       </div>
 
@@ -608,113 +720,6 @@
         </div></div></div>
       </div>
 
-      <!-- SLIDE 8: VENDOR WORKFLOW -->
-      <div class="slide" id="slide8">
-        <div class="page-header"><h1>AI Vendor Approval Workflow</h1><p>Sequential gate-based review process — each step completes before the next begins. Click a stage to see detailed requirements.</p></div>
-        <div class="wf-pipeline">
-          <div class="wf-stage s-ai active" onclick="showWfPanel(0)"><div class="wf-stage-inner"><div class="wf-stage-num">01</div><div class="wf-stage-title">AI Review</div><div class="wf-stage-owner">Aaron Purewal (Gatekeeper)</div><div class="wf-stage-desc">Efficacy, technical AI specs, decision framework</div></div></div>
-          <div class="wf-arrow">&rarr;</div>
-          <div class="wf-stage s-sec" onclick="showWfPanel(1)"><div class="wf-stage-inner"><div class="wf-stage-num">02</div><div class="wf-stage-title">Security</div><div class="wf-stage-owner">Daniel / Alex</div><div class="wf-stage-desc">Pen tests, SOC2, architecture review</div></div></div>
-          <div class="wf-arrow">&rarr;</div>
-          <div class="wf-stage s-legal" onclick="showWfPanel(2)"><div class="wf-stage-inner"><div class="wf-stage-num">03</div><div class="wf-stage-title">Legal</div><div class="wf-stage-owner">Amanda + Adam (J-Fin)</div><div class="wf-stage-desc">Contract clauses, AI terms, regional compliance</div></div></div>
-          <div class="wf-arrow">&rarr;</div>
-          <div class="wf-stage s-vr" onclick="showWfPanel(3)"><div class="wf-stage-inner"><div class="wf-stage-num">04</div><div class="wf-stage-title">Vendor Risk</div><div class="wf-stage-owner">Final Sign-Off</div><div class="wf-stage-desc">Enterprise risk assessment &amp; approval</div></div></div>
-        </div>
-
-        <!-- Panel 0: AI Review -->
-        <div class="wf-detail-panel active" id="wfPanel0">
-          <div class="section"><div class="section-header"><h2>Stage 1 — AI Review (Gatekeeper)</h2><span class="badge badge-blue">Owner: Aaron Purewal</span></div><div class="section-body">
-            <p style="margin-bottom:16px">Nothing moves to Security, Legal, or Vendor Risk until this review is complete. Evaluates efficacy, technical AI specifications, business justification, and MNPI exposure.</p>
-            <div class="three-col">
-              <div class="inner-card" style="border-top:2px solid var(--green)"><h4 style="color:var(--green)">&#10003; Approve If</h4><ul><li>Clear business case</li><li>No obvious redundancy</li><li>Specs acceptable or vendor willing to use Jefferies endpoints</li><li>POC with defined scope &amp; data restrictions</li></ul></div>
-              <div class="inner-card" style="border-top:2px solid var(--yellow)"><h4 style="color:var(--yellow)">&#9208; Slow Down / Escalate If</h4><ul><li>Data hosted outside Jefferies AWS/Azure</li><li>Unclear subprocessors or restricted regions</li><li>Security hasn't reviewed AI functionality</li><li>MNPI exposure without controls</li></ul></div>
-              <div class="inner-card" style="border-top:2px solid var(--red)"><h4 style="color:var(--red)">&#10007; Deny If</h4><ul><li>Blatant redundancy ("we have 50 products that do this")</li><li>Poor/outdated technology</li><li>Clear compliance violations</li></ul></div>
-            </div>
-            <div class="callout callout-blue" style="margin-top:16px"><strong>Hany's guidance:</strong> "Don't hold back. Balance velocity vs. governance. No-brainers, approve them. Tell requesters we're building a new process — they may need to do retroactive actions later."</div>
-            <div class="inner-card" style="margin-top:16px;border-top:2px solid var(--accent)"><h4 style="color:var(--accent)">Gatekeeper Checklist</h4><ul class="wf-checklist">
-              <li><strong>Is Jefferies buying a tool/platform or licensing data?</strong> Different paths apply.</li>
-              <li><strong>Research the tool online</strong> — confirm a basic understanding of how it's being used.</li>
-              <li><strong>Has the tool been approved from the AI perspective?</strong> Check GEP/JEDI notes.</li>
-              <li><strong>Business justification:</strong> Why can't existing tools be used?</li>
-              <li><strong>LLM architecture:</strong> What models, where hosted, subprocessors?</li>
-              <li><strong>Data handling:</strong> Retention policy, encryption, BYOK capability?</li>
-              <li><strong>MNPI exposure:</strong> Does data leave Jefferies AWS/Azure?</li>
-              <li><strong>Peer adoption:</strong> Used by Goldman, JPM, or Morgan Stanley?</li>
-              <li><strong>Geographic restrictions:</strong> Users in mainland China? Flag for AI SME.</li>
-              <li><strong>What countries will JEF users be located in?</strong> Check DPA requirements if outside US.</li>
-            </ul></div>
-            <div class="inner-card" style="margin-top:12px;border-top:2px solid var(--orange)"><h4 style="color:var(--orange)">Regulatory &amp; Audit Context</h4><ul>
-              <li>SEC and global regulators incoming (Dubai already painful)</li><li>Regulators: "Tell us how you're using every AI-enabled software"</li><li>Australian regulator audit inquiry in progress</li><li>Need clear accountability for AI outcomes</li><li>Annual recertification: unchanged usage? No additional data?</li><li>Priority: stop new request leakage, then document existing tools</li>
-            </ul><div class="callout callout-yellow" style="margin-top:12px"><strong>Watch Out:</strong> POC contract friction, scope creep into Legal, questionnaire sign-off, and document everything for audit readiness.</div></div>
-          </div></div>
-        </div>
-
-        <!-- Panel 1: Security -->
-        <div class="wf-detail-panel" id="wfPanel1">
-          <div class="section"><div class="section-header"><h2>Stage 2 — Security Review</h2><span class="badge badge-teal">Owner: Daniel / Alex</span></div><div class="section-body">
-            <p style="margin-bottom:16px">After AI Review approval, the vendor proceeds to Security for technical security assessment. Aaron provides security notes and conditions from Stage 1.</p>
-            <div class="inner-card" style="border-top:2px solid var(--teal)"><h4 style="color:var(--teal)">Security Review Scope</h4><ul class="wf-checklist">
-              <li><strong>Penetration testing</strong> — vendor infrastructure and application layer</li><li><strong>SOC2 Type II</strong> — current certification status and scope</li><li><strong>Architecture review</strong> — data flows, subprocessors, hosting locations</li><li><strong>FedRAMP authorization</strong> — if applicable for cloud services</li><li><strong>Encryption</strong> — in-transit and at-rest, customer-managed keys (BYOK)</li><li><strong>Access controls</strong> — admin-level model access, MFA, hardware key 2FA</li><li><strong>Network controls</strong> — egress restrictions, endpoint allowlisting</li>
-            </ul></div>
-            <div class="inner-card" style="margin-top:12px;border-top:2px solid var(--teal)"><h4 style="color:var(--teal)">Security Notes from AI Review (Passed Forward)</h4><p style="font-size:12.5px;margin-bottom:10px">Standard conditions Aaron attaches when passing to Security:</p><div class="two-col">
-              <div class="inner-card"><h4>Vendor SaaS / Hosted Tool</h4><ul><li>Dedicated tenant requirement</li><li>BYOK support</li><li>Zero-day retention on LLMs</li><li>Disclosure of all third-party models</li><li>Filter enable/disable capability</li></ul></div>
-              <div class="inner-card"><h4>Jefferies-Hosted Tool</h4><ul><li>Must be hosted in Jefferies environment only</li><li>Vendor must redirect LLM API calls to Jefferies endpoints</li><li>No data egress outside firm infrastructure</li></ul></div>
-            </div></div>
-          </div></div>
-        </div>
-
-        <!-- Panel 2: Legal -->
-        <div class="wf-detail-panel" id="wfPanel2">
-          <div class="section"><div class="section-header"><h2>Stage 3 — Legal Review</h2><span class="badge badge-purple">Owner: Amanda Kline + Adam (J-Fin)</span></div><div class="section-body">
-            <p style="margin-bottom:16px">After AI and Security approval, Legal reviews contract terms. Amanda's AI Cheatsheet defines the standard questions, contracting terms, and sample clauses for AI vendor agreements.</p>
-            <div class="callout callout-blue" style="margin-bottom:16px"><strong>MNPI Default Policy:</strong> "No MNPI" for all AI contracts unless specific technical controls are confirmed. Complete prohibition on MNPI going outside the firm.</div>
-            <div class="inner-card" style="border-top:2px solid var(--purple)"><h4 style="color:var(--purple)">Legal Triage — "What Do I Do When I Receive an AI Contract?"</h4><div class="two-col" style="margin-top:10px">
-              <div class="inner-card"><h4>Jefferies Buying a Tool/Platform</h4><ul><li>Has it been approved from the AI perspective by Aaron Purewal?</li><li>Check GEP/JEDI for additional security terms</li><li>Is it vendor-hosted (SaaS) or Jefferies-hosted?</li><li>What countries will JEF users be located in?</li><li>If non-US users, check DPA requirements and server hosting location</li><li>If Anthropic agreement — flag for AI SME if users in unlisted countries</li></ul></div>
-              <div class="inner-card"><h4>Jefferies Buying Data from a Vendor</h4><ul><li>Does the vendor platform have AI functionality available?</li><li>Does the vendor use AI to collect or process the data?</li><li>What countries will JEF users be located in?</li></ul></div>
-            </div>
-            <div class="inner-card" style="margin-top:10px"><h4>Consultant / Managed Services (Not Staff Aug)</h4><ul><li>Is the vendor/consultant using AI tools to provide their services?</li><li>If yes — in their environment or Jefferies? Default: AI in JEF environments for JEF data.</li><li>Who operates the AI tools? Consultant only, Jefferies only, or both?</li></ul></div></div>
-            <div class="inner-card" style="margin-top:16px;border-top:2px solid var(--purple)"><h4 style="color:var(--purple)">AI Contracting Terms — Sample Clauses</h4><p style="font-size:12.5px;margin-bottom:12px;color:var(--text-dim)">Standard terms Legal should include in AI vendor agreements (from Amanda's cheatsheet):</p><div class="wf-terms-grid">
-              <div class="wf-term-card"><h5>1. Dedicated Tenant</h5><p>Vendor stands up a dedicated instance for Jefferies use only during the term.</p></div>
-              <div class="wf-term-card"><h5>2. Bring Your Own Key (BYOK)</h5><p>All customer data encrypted using a Jefferies-managed key. Vendor cannot decrypt without Jefferies authorization.</p></div>
-              <div class="wf-term-card"><h5>3. Zero-Day Retention</h5><p>LLM inputs/outputs not retained, stored, cached, or used for training. Transient processing only; deleted within 24 hours.</p></div>
-              <div class="wf-term-card"><h5>4. Third-Party Model Disclosure</h5><p>Vendor must disclose all LLM providers, model names, versions, hosting regions. 30 days' notice before any model change.</p></div>
-              <div class="wf-term-card"><h5>5. Security Filters</h5><p>Vendor provides admin controls for automated security filters on inputs/outputs. Filters cannot be disabled without Jefferies approval.</p></div>
-              <div class="wf-term-card"><h5>6. Hosting in JEF Environment</h5><p>Platform hosted, deployed, and operated solely within Jefferies-controlled cloud (AWS/Azure/VPC/on-prem). No data egress.</p></div>
-              <div class="wf-term-card"><h5>7. API Redirect</h5><p>All LLM API calls routed exclusively through Jefferies-designated endpoints ("Customer AI Endpoints"). No direct vendor-to-LLM calls.</p></div>
-              <div class="wf-term-card"><h5>8. MNPI Segregation</h5><p>Strict logical and physical segregation of Jefferies MNPI. Tenant isolation, need-to-know access, background checks for vendor staff.</p></div>
-            </div></div>
-            <div class="inner-card" style="margin-top:16px;border-top:2px solid var(--purple)"><h4 style="color:var(--purple)">Additional Agreement Provisions</h4><ul>
-              <li><strong>MNPI upload restrictions:</strong> JEF business teams not permitted to upload MNPI — this is an internal guardrail; exceptions need Compliance + IT Sec approval</li>
-              <li><strong>MNPI segregation by vendor:</strong> Whether vendor can actually segregate MNPI depends on architecture — must be verified</li>
-              <li><strong>Vendor audit/governance:</strong> Performance benchmarks, bias and risk assessment, audit rights</li>
-              <li><strong>Termination rights (model changes):</strong> If vendor changes model providers, functionality, hosting locations</li>
-              <li><strong>Termination rights (risk/compliance):</strong> If JEF determines vendor AI practices pose reputational risk or compromise security/regulatory compliance</li>
-              <li><strong>Data retention variance:</strong> Check if LLM retention differs from the Information Security Addendum — vendors with third-party models may have different retention timelines</li>
-            </ul></div>
-            <div class="callout callout-yellow" style="margin-top:12px"><strong>POC Friction:</strong> Vendors increasingly want full contract negotiations upfront, creating double-work for Legal. Duration: up to 6 months (flexible).</div>
-          </div></div>
-        </div>
-
-        <!-- Panel 3: Vendor Risk -->
-        <div class="wf-detail-panel" id="wfPanel3">
-          <div class="section"><div class="section-header"><h2>Stage 4 — Vendor Risk (Final Sign-Off)</h2><span class="badge badge-green">Final Gate</span></div><div class="section-body">
-            <p style="margin-bottom:16px">After AI, Security, and Legal have all signed off, the vendor request moves to Vendor Risk for final enterprise risk assessment and approval.</p>
-            <div class="inner-card" style="border-top:2px solid var(--green)"><h4 style="color:var(--green)">Final Sign-Off Scope</h4><ul class="wf-checklist">
-              <li><strong>Enterprise risk classification</strong> — tier determination based on data sensitivity and business impact</li><li><strong>Compliance alignment</strong> — confirm adherence to Global Gen AI Policy and firm risk appetite</li><li><strong>Contractual completeness</strong> — all AI-specific clauses, MNPI protections, and termination rights in place</li><li><strong>Ongoing monitoring plan</strong> — annual recertification requirements defined</li><li><strong>Audit trail</strong> — documentation complete for SEC and regulatory review</li>
-            </ul></div>
-            <div class="inner-card" style="margin-top:12px;border-top:2px solid var(--green)"><h4 style="color:var(--green)">Post-Approval Requirements</h4><ul>
-              <li><strong>Annual recertification:</strong> "Are you still using this the same way? No additional data?"</li><li><strong>Change notifications:</strong> Vendor must notify 30 days before model or architecture changes</li><li><strong>Ongoing monitoring:</strong> Usage tracking, incident reporting, compliance review</li><li><strong>Hany cc'd</strong> on all approval/denial communications</li>
-            </ul></div>
-          </div></div>
-        </div>
-
-        <div class="section" style="margin-top:8px"><div class="section-header"><h2>Critical Policies (All Stages)</h2></div><div class="section-body"><div class="three-col">
-          <div class="inner-card" style="border-top:2px solid var(--red)"><h4 style="color:var(--red)">MNPI Policy</h4><p style="font-size:12.5px">MNPI is NEVER allowed in anything public or web-based unless within Jefferies' AWS or Azure instance. Complete prohibition on MNPI going outside the firm.</p></div>
-          <div class="inner-card" style="border-top:2px solid var(--purple)"><h4 style="color:var(--purple)">Legal Default</h4><p style="font-size:12.5px">"No MNPI" for all AI contracts unless specific technical controls are confirmed.</p></div>
-          <div class="inner-card" style="border-top:2px solid var(--orange)"><h4 style="color:var(--orange)">POC Standards</h4><p style="font-size:12.5px">Up to 6 months duration. Vendors increasingly want full contracts upfront — creates double-work for Legal.</p></div>
-        </div></div></div>
-      </div>
-
     </main>
   </div>
   <script>
@@ -736,6 +741,12 @@
       const label = document.getElementById('theme-label');
       if (sw.checked) { html.setAttribute('data-theme','dark'); label.innerHTML='&#127769; Dark'; }
       else { html.setAttribute('data-theme','light'); label.innerHTML='&#9728;&#65039; Light'; }
+    }
+    function showVendorTab(n) {
+      document.querySelectorAll('.vendor-subpage').forEach(function(p){p.classList.remove('active')});
+      document.querySelectorAll('.vendor-tab').forEach(function(t){t.classList.remove('active')});
+      document.getElementById('vendorSub'+n).classList.add('active');
+      document.querySelectorAll('.vendor-tab')[n].classList.add('active');
     }
     function showWfPanel(n) {
       document.querySelectorAll('.wf-detail-panel').forEach(p => p.classList.remove('active'));
