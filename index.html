@@ -32,6 +32,18 @@
       --red: #dc3545; --red-bg: rgba(220,53,69,0.08); --red-border: rgba(220,53,69,0.25);
       --purple: #7c4dff; --teal: #0d9488; --pink: #db2777; --orange: #e67e22;
     }
+    .pw-overlay{position:fixed;top:0;left:0;width:100%;height:100%;background:var(--bg);z-index:9999;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:24px;transition:opacity 0.4s ease}
+    .pw-overlay.hidden{opacity:0;pointer-events:none}
+    .pw-box{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:40px 48px;text-align:center;max-width:400px;width:90%;box-shadow:0 8px 32px rgba(0,0,0,0.12)}
+    .pw-box h2{font-size:18px;font-weight:700;margin-bottom:6px;letter-spacing:-0.02em}
+    .pw-box .pw-sub{font-size:13px;color:var(--text-dim);margin-bottom:24px}
+    .pw-box input{width:100%;padding:12px 16px;border:1px solid var(--border-bright);border-radius:var(--radius-sm);background:var(--surface-2);color:var(--text);font-family:var(--font);font-size:14px;outline:none;transition:border-color 0.2s}
+    .pw-box input:focus{border-color:var(--accent)}
+    .pw-box input.pw-error{border-color:var(--red);animation:shake 0.35s ease}
+    .pw-box button{margin-top:16px;width:100%;padding:12px;border:none;border-radius:var(--radius-sm);background:var(--accent);color:#fff;font-family:var(--font);font-size:14px;font-weight:600;cursor:pointer;transition:opacity 0.2s}
+    .pw-box button:hover{opacity:0.85}
+    .pw-error-msg{font-size:12px;color:var(--red);margin-top:8px;min-height:18px}
+    @keyframes shake{0%,100%{transform:translateX(0)}20%,60%{transform:translateX(-6px)}40%,80%{transform:translateX(6px)}}
     * { margin:0; padding:0; box-sizing:border-box; }
     body { font-family:var(--font); background:var(--bg); color:var(--text); min-height:100vh; -webkit-font-smoothing:antialiased; }
     .app { display:flex; min-height:100vh; }
@@ -222,12 +234,21 @@
   </style>
 </head>
 <body>
+  <div class="pw-overlay" id="pwOverlay">
+    <div class="pw-box">
+      <h2>Jefferies AI Enablement</h2>
+      <p class="pw-sub">Enter password to access the dashboard</p>
+      <input type="password" id="pwInput" placeholder="Password" autocomplete="off" />
+      <button id="pwBtn">Access Dashboard</button>
+      <div class="pw-error-msg" id="pwError"></div>
+    </div>
+  </div>
   <div class="app">
     <nav class="sidebar">
       <div class="sidebar-brand">
         <h1>Jefferies AI<br>Enablement Program</h1>
         <div class="brand-sub">Status Dashboard</div>
-        <div class="brand-date">Feb 17, 2026</div>
+        <div class="brand-date">Feb 19, 2026</div>
       </div>
       <div class="nav-section">Navigation</div>
       <button class="nav-item active" onclick="goToSlide(0)"><span class="nav-icon">&#9678;</span> Dashboard</button>
@@ -722,6 +743,27 @@
       document.getElementById('wfPanel'+n).classList.add('active');
       document.querySelectorAll('.wf-stage')[n].classList.add('active');
     }
+  </script>
+  <script>
+    (function(){
+      var overlay=document.getElementById('pwOverlay');
+      var input=document.getElementById('pwInput');
+      var btn=document.getElementById('pwBtn');
+      var errMsg=document.getElementById('pwError');
+      function tryUnlock(){
+        if(input.value==='jefferies'){
+          overlay.classList.add('hidden');
+          setTimeout(function(){overlay.style.display='none'},400);
+        } else {
+          input.classList.add('pw-error');
+          errMsg.textContent='Incorrect password. Please try again.';
+          setTimeout(function(){input.classList.remove('pw-error')},400);
+        }
+      }
+      btn.addEventListener('click',tryUnlock);
+      input.addEventListener('keydown',function(e){if(e.key==='Enter')tryUnlock()});
+      input.focus();
+    })();
   </script>
 </body>
 </html>
