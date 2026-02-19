@@ -1,0 +1,727 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>AI Enablement Program — Jefferies</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --radius: 12px;
+      --radius-sm: 8px;
+      --font: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      --mono: 'JetBrains Mono', monospace;
+    }
+    [data-theme="dark"] {
+      --bg: #0b0f1a; --surface: #131825; --surface-2: #1a2035; --surface-3: #212841;
+      --border: rgba(255,255,255,0.06); --border-bright: rgba(255,255,255,0.12);
+      --text: #e4e8f1; --text-dim: #8892a8; --text-muted: #5a6580;
+      --accent: #5b8af5; --accent-glow: rgba(91,138,245,0.15);
+      --green: #34d399; --green-bg: rgba(52,211,153,0.1); --green-border: rgba(52,211,153,0.25);
+      --yellow: #fbbf24; --yellow-bg: rgba(251,191,36,0.1); --yellow-border: rgba(251,191,36,0.25);
+      --red: #f87171; --red-bg: rgba(248,113,113,0.1); --red-border: rgba(248,113,113,0.25);
+      --purple: #a78bfa; --teal: #2dd4bf; --pink: #f472b6; --orange: #fb923c;
+    }
+    [data-theme="light"] {
+      --bg: #f0f2f5; --surface: #ffffff; --surface-2: #f7f8fa; --surface-3: #eef0f4;
+      --border: rgba(0,0,0,0.08); --border-bright: rgba(0,0,0,0.14);
+      --text: #1a1f2e; --text-dim: #4a5568; --text-muted: #8896ab;
+      --accent: #3b6fd4; --accent-glow: rgba(59,111,212,0.1);
+      --green: #16a366; --green-bg: rgba(22,163,102,0.08); --green-border: rgba(22,163,102,0.25);
+      --yellow: #d69e0a; --yellow-bg: rgba(214,158,10,0.08); --yellow-border: rgba(214,158,10,0.25);
+      --red: #dc3545; --red-bg: rgba(220,53,69,0.08); --red-border: rgba(220,53,69,0.25);
+      --purple: #7c4dff; --teal: #0d9488; --pink: #db2777; --orange: #e67e22;
+    }
+    * { margin:0; padding:0; box-sizing:border-box; }
+    body { font-family:var(--font); background:var(--bg); color:var(--text); min-height:100vh; -webkit-font-smoothing:antialiased; }
+    .app { display:flex; min-height:100vh; }
+    .sidebar { width:260px; background:var(--surface); border-right:1px solid var(--border); padding:24px 0; position:fixed; top:0; left:0; bottom:0; z-index:100; display:flex; flex-direction:column; overflow-y:auto; }
+    .sidebar-brand { padding:0 24px 24px; border-bottom:1px solid var(--border); margin-bottom:8px; }
+    .sidebar-brand h1 { font-size:15px; font-weight:700; letter-spacing:-0.02em; color:var(--text); line-height:1.3; }
+    .sidebar-brand .brand-sub { font-size:11px; color:var(--text-muted); font-weight:500; letter-spacing:0.08em; text-transform:uppercase; margin-top:4px; }
+    .sidebar-brand .brand-date { font-family:var(--mono); font-size:11px; color:var(--accent); margin-top:8px; padding:4px 8px; background:var(--accent-glow); border-radius:6px; display:inline-block; }
+    .nav-section { padding:16px 16px 8px; font-size:10px; font-weight:600; letter-spacing:0.1em; text-transform:uppercase; color:var(--text-muted); }
+    .nav-item { display:flex; align-items:center; gap:12px; padding:10px 24px; font-size:13.5px; font-weight:500; color:var(--text-dim); cursor:pointer; transition:all 0.15s ease; border:none; background:none; width:100%; text-align:left; border-left:2px solid transparent; }
+    .nav-item:hover { color:var(--text); background:rgba(255,255,255,0.03); }
+    .nav-item.active { color:var(--accent); background:var(--accent-glow); border-left-color:var(--accent); font-weight:600; }
+    .nav-icon { width:18px; text-align:center; font-size:14px; flex-shrink:0; }
+    .main { margin-left:260px; flex:1; padding:32px 40px; max-width:1200px; }
+    .slide { display:none; animation:fadeUp 0.35s ease-out; }
+    .slide.active { display:block; }
+    @keyframes fadeUp { from{opacity:0;transform:translateY(12px)} to{opacity:1;transform:translateY(0)} }
+    .page-header { margin-bottom:32px; }
+    .page-header h1 { font-size:28px; font-weight:700; letter-spacing:-0.03em; color:var(--text); }
+    .page-header p { font-size:14px; color:var(--text-dim); margin-top:6px; }
+    .dash-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:16px; margin-bottom:32px; }
+    .dash-tile { position:relative; border-radius:var(--radius); padding:24px; cursor:pointer; border:1px solid var(--border); background:var(--surface); transition:all 0.2s ease; overflow:hidden; text-align:left; width:100%; }
+    .dash-tile::before { content:''; position:absolute; top:0; left:0; right:0; height:2px; }
+    .dash-tile:hover { border-color:var(--border-bright); transform:translateY(-2px); box-shadow:0 8px 32px rgba(0,0,0,0.15); }
+    .dash-tile .tile-icon { width:36px; height:36px; border-radius:10px; display:flex; align-items:center; justify-content:center; font-size:16px; margin-bottom:16px; }
+    .dash-tile h3 { font-size:15px; font-weight:600; color:var(--text); margin-bottom:6px; }
+    .dash-tile p { font-size:13px; color:var(--text-dim); line-height:1.5; }
+    .tile-blue::before{background:var(--accent)} .tile-blue .tile-icon{background:var(--accent-glow);color:var(--accent)}
+    .tile-teal::before{background:var(--teal)} .tile-teal .tile-icon{background:rgba(45,212,191,0.12);color:var(--teal)}
+    .tile-purple::before{background:var(--purple)} .tile-purple .tile-icon{background:rgba(167,139,250,0.12);color:var(--purple)}
+    .tile-orange::before{background:var(--orange)} .tile-orange .tile-icon{background:rgba(251,146,60,0.12);color:var(--orange)}
+    .tile-green::before{background:var(--green)} .tile-green .tile-icon{background:var(--green-bg);color:var(--green)}
+    .tile-pink::before{background:var(--pink)} .tile-pink .tile-icon{background:rgba(244,114,182,0.12);color:var(--pink)}
+    .tile-red::before{background:var(--red)} .tile-red .tile-icon{background:var(--red-bg);color:var(--red)}
+    .kpi-row { display:grid; grid-template-columns:repeat(4,1fr); gap:16px; margin-bottom:32px; }
+    .kpi-card { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:20px; }
+    .kpi-label { font-size:11px; font-weight:600; letter-spacing:0.08em; text-transform:uppercase; color:var(--text-muted); margin-bottom:8px; }
+    .kpi-value { font-size:28px; font-weight:700; letter-spacing:-0.02em; color:var(--text); }
+    .kpi-sub { font-size:12px; color:var(--text-dim); margin-top:4px; }
+    .section { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); margin-bottom:20px; overflow:hidden; }
+    .section-header { padding:18px 24px; border-bottom:1px solid var(--border); display:flex; align-items:center; justify-content:space-between; }
+    .section-header h2 { font-size:15px; font-weight:600; color:var(--text); }
+    .section-body { padding:20px 24px; }
+    .section-body p { font-size:13.5px; color:var(--text-dim); line-height:1.7; }
+    .section-body ul { list-style:none; padding:0; }
+    .section-body li { font-size:13.5px; color:var(--text-dim); line-height:1.7; padding:6px 0; padding-left:24px; position:relative; }
+    .section-body li::before { content:''; position:absolute; left:6px; top:14px; width:6px; height:6px; border-radius:50%; background:var(--accent); opacity:0.5; }
+    .section-body li strong { color:var(--text); font-weight:600; }
+    .section-body li ul { margin-top:4px; }
+    .section-body li ul li::before { background:var(--purple); width:5px; height:5px; }
+    table { width:100%; border-collapse:collapse; font-size:13px; }
+    th { text-align:left; padding:12px 16px; font-size:10.5px; font-weight:600; letter-spacing:0.08em; text-transform:uppercase; color:var(--text-muted); background:var(--surface-2); border-bottom:1px solid var(--border); }
+    td { padding:12px 16px; border-bottom:1px solid var(--border); color:var(--text-dim); vertical-align:top; line-height:1.5; }
+    tr:hover td { background:rgba(255,255,255,0.015); }
+    td strong { color:var(--text); }
+    .badge { display:inline-flex; align-items:center; gap:5px; padding:3px 10px; border-radius:999px; font-size:11px; font-weight:600; white-space:nowrap; }
+    .badge-green{background:var(--green-bg);color:var(--green);border:1px solid var(--green-border)}
+    .badge-yellow{background:var(--yellow-bg);color:var(--yellow);border:1px solid var(--yellow-border)}
+    .badge-red{background:var(--red-bg);color:var(--red);border:1px solid var(--red-border)}
+    .badge-blue{background:var(--accent-glow);color:var(--accent);border:1px solid rgba(91,138,245,0.25)}
+    .badge-purple{background:rgba(167,139,250,0.1);color:var(--purple);border:1px solid rgba(167,139,250,0.25)}
+    .badge-teal{background:rgba(45,212,191,0.1);color:var(--teal);border:1px solid rgba(45,212,191,0.25)}
+    .badge-dim{background:rgba(255,255,255,0.04);color:var(--text-dim);border:1px solid var(--border)}
+    .badge-ready{background:rgba(52,211,153,0.08);color:var(--green);border:1px dashed var(--green-border);font-size:10px;margin-left:6px}
+    .gov-grid{display:grid;grid-template-columns:1.3fr 0.7fr;gap:20px}
+    .gov-card{background:var(--surface-2);border:1px solid var(--border-bright);border-radius:var(--radius);padding:20px;position:relative}
+    .gov-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--accent);border-radius:var(--radius) var(--radius) 0 0}
+    .gov-card h3{font-size:14px;font-weight:700;color:var(--text);margin-bottom:4px}
+    .gov-card .gov-role{font-size:11.5px;color:var(--accent);font-weight:600;margin-bottom:10px}
+    .gov-card ul{list-style:none;padding:0;margin:0}
+    .gov-card li{font-size:13px;color:var(--text-dim);line-height:1.6;padding:3px 0 3px 22px;position:relative}
+    .gov-card li::before{content:'';position:absolute;left:6px;top:12px;width:6px;height:6px;border-radius:50%;background:var(--accent);opacity:0.5}
+    .gov-card .gov-members{margin-top:12px;padding-top:10px;border-top:1px solid var(--border);font-size:12px;color:var(--text-muted)}
+    .gov-stack{display:flex;flex-direction:column;gap:16px}
+    .gov-steps-box{background:var(--surface-2);border:1px solid var(--border-bright);border-radius:var(--radius);padding:20px}
+    .gov-steps-box h3{font-size:14px;font-weight:700;color:var(--text);margin-bottom:4px;text-align:center}
+    .gov-steps-box .steps-subtitle{font-size:12px;color:var(--text-muted);text-align:center;margin-bottom:16px}
+    .step-item{display:flex;align-items:center;gap:12px;padding:10px 14px;background:var(--surface-3);border-radius:var(--radius-sm);margin-bottom:8px;border-left:3px solid var(--accent)}
+    .step-num{font-family:var(--mono);font-size:12px;font-weight:600;color:var(--accent);background:var(--accent-glow);width:24px;height:24px;border-radius:6px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+    .step-text{font-size:13px;font-weight:600;color:var(--text)}
+    .ws-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px;margin-top:20px}
+    .ws-card{background:var(--surface-2);border:1px solid var(--border);border-radius:var(--radius);padding:16px;text-align:center;transition:border-color 0.15s}
+    .ws-card:hover{border-color:var(--border-bright)}
+    .ws-card .ws-icon{font-size:20px;margin-bottom:8px}
+    .ws-card .ws-name{font-size:12px;font-weight:600;color:var(--text);line-height:1.3;margin-bottom:4px}
+    .ws-card .ws-owner{font-size:11px;color:var(--accent);font-weight:600}
+    .ws-card .ws-desc{font-size:11px;color:var(--text-muted);margin-top:4px}
+    .decision-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:16px}
+    .decision-card{background:var(--surface-3);border-radius:var(--radius-sm);padding:16px;border-top:2px solid var(--accent)}
+    .decision-card h4{font-size:13px;font-weight:700;color:var(--text);margin-bottom:6px}
+    .decision-card p{font-size:12.5px;color:var(--text-dim);line-height:1.5}
+    .comms-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}
+    .comms-card{background:var(--surface-2);border:1px solid var(--border);border-radius:var(--radius);padding:20px}
+    .comms-card h3{font-size:14px;font-weight:700;color:var(--text);margin-top:8px;margin-bottom:8px}
+    .comms-card ul{list-style:none;padding:0;margin:0}
+    .comms-card li{font-size:13px;color:var(--text-dim);padding:3px 0 3px 22px;line-height:1.5;position:relative}
+    .comms-card li::before{content:'';position:absolute;left:6px;top:11px;width:6px;height:6px;border-radius:50%;background:var(--accent);opacity:0.5}
+    .docs-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:16px}
+    .doc-chip{background:var(--surface-2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:14px 16px;text-align:center;font-size:13px;font-weight:600;color:var(--text-dim)}
+    .ws-status-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:20px}
+    .ws-status-card{background:var(--surface-2);border:1px solid var(--border);border-radius:var(--radius);padding:16px}
+    .ws-status-card h4{font-size:13px;font-weight:600;color:var(--text);margin-bottom:6px}
+    .ws-status-card p{font-size:12px;color:var(--text-muted);line-height:1.5}
+    .flow-row{display:flex;gap:12px;margin-top:12px}
+    .flow-step{flex:1;background:var(--surface-2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:14px;text-align:center;position:relative}
+    .flow-step h4{font-size:13px;font-weight:700;color:var(--text);margin-bottom:4px}
+    .flow-step p{font-size:11.5px;color:var(--text-muted)}
+    .flow-step::after{content:'\2192';position:absolute;right:-10px;top:50%;transform:translateY(-50%);color:var(--text-muted);font-size:14px;z-index:1}
+    .flow-step:last-child::after{display:none}
+    .gantt-wrapper{overflow-x:auto}
+    .gantt-chart{min-width:700px}
+    .gantt-header{display:flex;padding-left:200px;margin-bottom:8px}
+    .gantt-header span{flex:1;font-size:11px;font-weight:600;color:var(--text-muted);text-align:center}
+    .gantt-row{display:flex;align-items:center;padding:6px 0}
+    .gantt-label{width:200px;flex-shrink:0;font-size:13px;font-weight:500;color:var(--text-dim)}
+    .gantt-track{flex:1;height:24px;background:var(--surface-3);border-radius:6px;position:relative;overflow:hidden}
+    .gantt-bar{height:100%;border-radius:6px;position:absolute}
+    .milestone-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-top:16px}
+    .milestone-item{display:flex;gap:12px;align-items:flex-start;padding:12px;background:var(--surface-2);border-radius:var(--radius-sm);border:1px solid var(--border)}
+    .milestone-date{font-family:var(--mono);font-size:11px;font-weight:500;color:var(--accent);background:var(--accent-glow);padding:4px 8px;border-radius:6px;white-space:nowrap;flex-shrink:0}
+    .milestone-text{font-size:13px;color:var(--text-dim);line-height:1.5}
+    .callout{padding:14px 18px;border-radius:var(--radius-sm);font-size:13px;line-height:1.6;margin-top:12px}
+    .callout-blue{background:var(--accent-glow);border:1px solid rgba(91,138,245,0.2);color:var(--accent)}
+    .callout-yellow{background:var(--yellow-bg);border:1px solid var(--yellow-border);color:var(--yellow)}
+    .callout-red{background:var(--red-bg);border:1px solid var(--red-border);color:var(--red)}
+    .callout strong{color:inherit}
+    .inner-card{background:var(--surface-2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:16px;margin-top:12px}
+    .inner-card h4{font-size:13px;font-weight:700;color:var(--text);margin-bottom:8px}
+    .two-col{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+    .three-col{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+    /* Workflow Visual */
+    .wf-pipeline{display:flex;gap:0;margin-bottom:28px;position:relative}
+    .wf-stage{flex:1;position:relative;cursor:pointer;transition:transform 0.15s}
+    .wf-stage:hover{transform:translateY(-2px)}
+    .wf-stage-inner{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:20px 16px;text-align:center;position:relative;overflow:hidden;height:100%}
+    .wf-stage-inner::before{content:'';position:absolute;top:0;left:0;right:0;height:3px}
+    .wf-stage.s-ai .wf-stage-inner::before{background:var(--accent)} .wf-stage.s-sec .wf-stage-inner::before{background:var(--teal)} .wf-stage.s-legal .wf-stage-inner::before{background:var(--purple)} .wf-stage.s-vr .wf-stage-inner::before{background:var(--green)}
+    .wf-stage.active .wf-stage-inner{border-color:var(--border-bright);box-shadow:0 4px 20px rgba(0,0,0,0.15)}
+    .wf-stage-num{font-family:var(--mono);font-size:11px;font-weight:600;padding:3px 8px;border-radius:6px;display:inline-block;margin-bottom:8px}
+    .wf-stage.s-ai .wf-stage-num{background:var(--accent-glow);color:var(--accent)} .wf-stage.s-sec .wf-stage-num{background:rgba(45,212,191,0.12);color:var(--teal)} .wf-stage.s-legal .wf-stage-num{background:rgba(167,139,250,0.12);color:var(--purple)} .wf-stage.s-vr .wf-stage-num{background:var(--green-bg);color:var(--green)}
+    .wf-stage-title{font-size:14px;font-weight:700;color:var(--text);margin-bottom:4px}
+    .wf-stage-owner{font-size:11.5px;color:var(--text-muted);font-weight:500}
+    .wf-stage-desc{font-size:12px;color:var(--text-dim);margin-top:8px;line-height:1.5}
+    .wf-arrow{display:flex;align-items:center;justify-content:center;width:28px;flex-shrink:0;color:var(--text-muted);font-size:18px;font-weight:700}
+    .wf-detail-panel{display:none;animation:fadeUp 0.3s ease-out}
+    .wf-detail-panel.active{display:block}
+    .wf-checklist{list-style:none;padding:0;margin:0}
+    .wf-checklist li{font-size:13px;color:var(--text-dim);line-height:1.6;padding:5px 0 5px 28px;position:relative}
+    .wf-checklist li::before{content:'\2610';position:absolute;left:4px;top:5px;font-size:13px;color:var(--text-muted)}
+    .wf-checklist li strong{color:var(--text)}
+    .wf-terms-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+    .wf-term-card{background:var(--surface-3);border-radius:var(--radius-sm);padding:14px;border-left:3px solid var(--purple)}
+    .wf-term-card h5{font-size:12.5px;font-weight:700;color:var(--text);margin-bottom:4px}
+    .wf-term-card p{font-size:12px;color:var(--text-dim);line-height:1.5}
+    /* Roadmap */
+    .roadmap-month{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);margin-bottom:20px;overflow:hidden}
+    .roadmap-month-header{padding:16px 24px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+    .roadmap-month-header h3{font-size:16px;font-weight:700;color:var(--text)}
+    .roadmap-items{padding:16px 24px;display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px}
+    .roadmap-item{background:var(--surface-2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:14px}
+    .roadmap-item h5{font-size:13px;font-weight:700;color:var(--text);margin-bottom:4px}
+    .roadmap-item p{font-size:12px;color:var(--text-dim);line-height:1.5}
+    .roadmap-item .ri-detail{font-size:11.5px;color:var(--text-muted);font-style:italic;margin-top:4px}
+    /* Theme Toggle */
+    .theme-toggle{margin:auto 16px 16px;padding:10px 12px;background:var(--surface-2);border:1px solid var(--border);border-radius:var(--radius-sm);display:flex;align-items:center;justify-content:space-between;gap:10px}
+    .theme-toggle span{font-size:12px;font-weight:600;color:var(--text-dim)}
+    .toggle-switch{position:relative;width:44px;height:24px;cursor:pointer;flex-shrink:0}
+    .toggle-switch input{display:none}
+    .toggle-track{position:absolute;inset:0;background:var(--surface-3);border-radius:999px;border:1px solid var(--border-bright);transition:background 0.2s}
+    .toggle-switch input:checked+.toggle-track{background:var(--accent);border-color:var(--accent)}
+    .toggle-thumb{position:absolute;top:3px;left:3px;width:18px;height:18px;background:var(--text);border-radius:50%;transition:transform 0.2s,background 0.2s;z-index:1}
+    .toggle-switch input:checked~.toggle-thumb{transform:translateX(20px);background:#fff}
+    .mobile-nav{display:none;flex-wrap:wrap;gap:8px;margin-bottom:20px}
+    .mobile-nav button{padding:8px 14px;font-size:12px;font-weight:600;font-family:var(--font);border-radius:999px;border:1px solid var(--border);background:var(--surface);color:var(--text-dim);cursor:pointer}
+    .mobile-nav button.active{background:var(--accent-glow);color:var(--accent);border-color:rgba(91,138,245,0.3)}
+    ::-webkit-scrollbar{width:6px;height:6px} ::-webkit-scrollbar-track{background:transparent} ::-webkit-scrollbar-thumb{background:var(--surface-3);border-radius:3px}
+    @media(max-width:1024px){
+      .sidebar{display:none} .main{margin-left:0;padding:20px} .mobile-nav{display:flex!important}
+      .dash-grid{grid-template-columns:repeat(2,1fr)} .kpi-row{grid-template-columns:repeat(2,1fr)}
+      .gov-grid{grid-template-columns:1fr} .comms-grid{grid-template-columns:1fr}
+      .ws-status-grid{grid-template-columns:repeat(2,1fr)} .decision-grid{grid-template-columns:1fr}
+      .flow-row{flex-wrap:wrap} .flow-step::after{display:none}
+      .two-col,.three-col{grid-template-columns:1fr} .docs-grid{grid-template-columns:1fr}
+      .milestone-grid{grid-template-columns:1fr}
+      .wf-pipeline{flex-direction:column} .wf-arrow{width:auto;height:20px;transform:rotate(90deg)}
+      .wf-terms-grid{grid-template-columns:1fr} .roadmap-items{grid-template-columns:1fr}
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <nav class="sidebar">
+      <div class="sidebar-brand">
+        <h1>Jefferies AI<br>Enablement Program</h1>
+        <div class="brand-sub">Status Dashboard</div>
+        <div class="brand-date">Feb 17, 2026</div>
+      </div>
+      <div class="nav-section">Navigation</div>
+      <button class="nav-item active" onclick="goToSlide(0)"><span class="nav-icon">&#9678;</span> Dashboard</button>
+      <button class="nav-item" onclick="goToSlide(1)"><span class="nav-icon">&#9635;</span> Program Status</button>
+      <button class="nav-item" onclick="goToSlide(2)"><span class="nav-icon">&#9672;</span> Governance Model</button>
+      <button class="nav-item" onclick="goToSlide(3)"><span class="nav-icon">&#9671;</span> Communications</button>
+      <button class="nav-item" onclick="goToSlide(4)"><span class="nav-icon">&#9776;</span> Use Cases</button>
+      <button class="nav-item" onclick="goToSlide(5)"><span class="nav-icon">&#9881;</span> JefAI Platform</button>
+      <button class="nav-item" onclick="goToSlide(6)"><span class="nav-icon">&#9670;</span> Vendors</button>
+      <button class="nav-item" onclick="goToSlide(7)"><span class="nav-icon">&#9636;</span> Timeline</button>
+      <button class="nav-item" onclick="goToSlide(8)"><span class="nav-icon">&#8674;</span> Vendor Workflow</button>
+      <div class="theme-toggle">
+        <span id="theme-label">&#9728;&#65039; Light</span>
+        <label class="toggle-switch">
+          <input type="checkbox" id="themeSwitch" onchange="toggleTheme()">
+          <div class="toggle-track"></div>
+          <div class="toggle-thumb"></div>
+        </label>
+      </div>
+    </nav>
+    <main class="main">
+      <div class="mobile-nav">
+        <button class="active" onclick="goToSlide(0)">Dashboard</button>
+        <button onclick="goToSlide(1)">Status</button>
+        <button onclick="goToSlide(2)">Governance</button>
+        <button onclick="goToSlide(3)">Comms</button>
+        <button onclick="goToSlide(4)">Use Cases</button>
+        <button onclick="goToSlide(5)">JefAI</button>
+        <button onclick="goToSlide(6)">Vendors</button>
+        <button onclick="goToSlide(7)">Timeline</button>
+        <button onclick="goToSlide(8)">Workflow</button>
+      </div>
+
+      <!-- SLIDE 0: DASHBOARD -->
+      <div class="slide active" id="slide0">
+        <div class="page-header">
+          <h1>Program Overview</h1>
+          <p>AI Enablement Program — quick access to governance, status, vendors, and delivery timelines.</p>
+        </div>
+        <div class="kpi-row">
+          <div class="kpi-card"><div class="kpi-label">Active Use Cases</div><div class="kpi-value">27</div><div class="kpi-sub">Across 12 departments</div></div>
+          <div class="kpi-card"><div class="kpi-label">Vendors Approved</div><div class="kpi-value">9</div><div class="kpi-sub">Last month</div></div>
+          <div class="kpi-card"><div class="kpi-label">In Review</div><div class="kpi-value">10</div><div class="kpi-sub">Vendor evaluations active</div></div>
+          <div class="kpi-card"><div class="kpi-label">ClaudeCode Users</div><div class="kpi-value">893</div><div class="kpi-sub">400 active &middot; ~$250K/yr</div></div>
+        </div>
+        <div class="dash-grid">
+          <button class="dash-tile tile-purple" onclick="goToSlide(1)"><div class="tile-icon">&#9635;</div><h3>Program Status</h3><p>Workstream updates, training, AI tooling metrics, and change management.</p></button>
+          <button class="dash-tile tile-blue" onclick="goToSlide(2)"><div class="tile-icon">&#9672;</div><h3>Governance Model</h3><p>ExCo, SteerCo, Control Group, Workstream structure &amp; decision rights.</p></button>
+          <button class="dash-tile tile-teal" onclick="goToSlide(3)"><div class="tile-icon">&#9671;</div><h3>Communications Plan</h3><p>Meeting cadence, accountability, and core program documents.</p></button>
+          <button class="dash-tile tile-pink" onclick="goToSlide(4)"><div class="tile-icon">&#9776;</div><h3>Use Case Tracker</h3><p>All active use cases, status, stakeholders, and assigned engineers.</p></button>
+          <button class="dash-tile tile-red" onclick="goToSlide(5)"><div class="tile-icon">&#9881;</div><h3>JefAI Platform</h3><p>Monthly roadmap — January through May feature releases and connectors.</p></button>
+          <button class="dash-tile tile-orange" onclick="goToSlide(6)"><div class="tile-icon">&#9670;</div><h3>Vendor Management</h3><p>Gatekeeper workflow, vendor tracker, approvals, and watch items.</p></button>
+          <button class="dash-tile tile-green" onclick="goToSlide(7)"><div class="tile-icon">&#9636;</div><h3>GANTT &amp; Milestones</h3><p>2025–2026 delivery timelines and key regulatory dates.</p></button>
+        </div>
+      </div>
+
+      <!-- SLIDE 1: PROGRAM STATUS -->
+      <div class="slide" id="slide1">
+        <div class="page-header">
+          <h1>Program Status Report</h1>
+          <p>Workstream updates, use case delivery, platform engineering, and risk &amp; controls.</p>
+        </div>
+        <div class="ws-status-grid">
+          <div class="ws-status-card"><h4>AI Platform &amp; Engineering</h4><p>Dedicated tab with monthly roadmap. <span style="color:var(--accent);cursor:pointer" onclick="goToSlide(5)">View &rarr;</span></p></div>
+          <div class="ws-status-card"><h4>Use Cases</h4><p>Dedicated tab with metrics. <span style="color:var(--accent);cursor:pointer" onclick="goToSlide(4)">View &rarr;</span></p></div>
+          <div class="ws-status-card"><h4>Data &amp; Integration</h4><p style="color:var(--yellow);font-style:italic">Update Pending</p></div>
+          <div class="ws-status-card"><h4>AI Tooling</h4><p>ClaudeCode usage, cost, and metrics tracking below.</p></div>
+          <div class="ws-status-card"><h4>Change, Training &amp; Comms</h4><p>Training launches, AI Lab opening, and exec sessions — see below.</p></div>
+          <div class="ws-status-card"><h4>Vendor &amp; Third-Party Mgmt</h4><p>Status updated on vendor page. <span style="color:var(--accent);cursor:pointer" onclick="goToSlide(6)">View &rarr;</span></p></div>
+        </div>
+        <div class="section">
+          <div class="section-header"><h2>Change, Training &amp; Comms — Update</h2></div>
+          <div class="section-body"><ul>
+            <li><strong>Firmwide AI Training Catalogue Communication</strong> scheduled for 2/17 — pending Matt &amp; Mike approval.</li>
+            <li>Publishing curriculum and scheduling <strong>executive training sessions</strong> starting in March.</li>
+            <li>Opening <strong>AI Innovation Lab in 520</strong> for in-person learning and office hours — March 3rd.</li>
+            <li>Launching week of Feb 23: <strong>JefAI Low Code / No Code hands-on training</strong> &amp; <strong>Copilot 201</strong> — three training courses: Excel (Beginners), Excel (Advanced), Prompting and Troubleshooting.</li>
+          </ul></div>
+        </div>
+        <div class="section">
+          <div class="section-header"><h2>AI Tooling — Update</h2></div>
+          <div class="section-body"><ul>
+            <li><strong>ClaudeCode Sonnet/Haiku</strong> enabled for 893 users across Jefferies with 400 active users; annualized cost &asymp; $250,000 based on current usage.</li>
+            <li><strong>Industry standard:</strong> ClaudeCode Opus, identified as 28% more effective by third-party assessment at an additional cost &asymp; $160,000/year.</li>
+            <li>Additional ClaudeCode variants can be introduced:<ul>
+              <li><strong>FastOpus</strong> — 20% timing to create outputs at 500% cost increase.</li>
+              <li><strong>1mOpus</strong> — Increases context window to 1M lines before requiring additional windows at 200% the cost.</li>
+            </ul></li>
+            <li><strong>DX Developer Metrics</strong> tool live for 200 engineers across Jefferies.</li>
+          </ul></div>
+        </div>
+      </div>
+
+      <!-- SLIDE 2: GOVERNANCE -->
+      <div class="slide" id="slide2">
+        <div class="page-header"><h1>Governance Model</h1><p>Jefferies AI Enablement Program — organizational structure, operating model, and decision rights.</p></div>
+        <div class="gov-grid">
+          <div class="gov-stack">
+            <div class="gov-card"><h3>Executive Committee (ExCo)</h3><div class="gov-role">Strategy &amp; Authority</div><ul><li>Sets direction &amp; risk appetite</li><li>Approves major investments &amp; policy</li><li>Resolves enterprise tradeoffs</li></ul><div class="gov-members">Members: M. Sharp, M. Larson, G. Kearsley, Vikram Dewan, J. Goldman</div></div>
+            <div class="gov-card" style="--accent:var(--teal)"><h3>Steering Committee (SteerCo)</h3><div class="gov-role" style="color:var(--teal)">Portfolio &amp; Delivery Oversight</div><ul><li>Owns portfolio prioritization</li><li>Approves stage gates (pilot &rarr; prod &rarr; scale)</li><li>Ensures controls &amp; standards</li></ul><div class="gov-members">Tech Leads: Anil Sharma, Alicia Li, Victor Truong, Helena Dona Duran, K. Mandhadi<br>Business Leads: TBD (by Business Unit)</div></div>
+            <div class="gov-card" style="--accent:var(--purple)"><h3>AI Enablement Project Team</h3><div class="gov-role" style="color:var(--purple)">Execution Engine (reports to SteerCo)</div><ul><li>Program management &amp; delivery orchestration</li><li>Tracks risks, issues, dependencies</li><li>Drives cross-workstream execution</li></ul><div class="gov-members">Team: Hany Doss, Andrew Ehrlich, Conor Dowling</div></div>
+          </div>
+          <div><div class="gov-steps-box"><h3>Operating Model</h3><div class="steps-subtitle">One Front Door</div>
+            <div class="step-item"><span class="step-num">1</span><span class="step-text">Intake</span></div>
+            <div class="step-item"><span class="step-num">2</span><span class="step-text">Triage &amp; Tiering</span></div>
+            <div class="step-item"><span class="step-num">3</span><span class="step-text">Prioritize</span></div>
+            <div class="step-item"><span class="step-num">4</span><span class="step-text">Stage Gates</span></div>
+            <div class="step-item"><span class="step-num">5</span><span class="step-text">Measure &amp; Improve</span></div>
+          </div></div>
+        </div>
+        <div class="ws-grid">
+          <div class="ws-card"><div class="ws-icon">&#9881;</div><div class="ws-name">AI Platform &amp; Engineering</div><div class="ws-owner">Sudhi Rao</div><div class="ws-desc">Platform build, tooling, connectors</div></div>
+          <div class="ws-card"><div class="ws-icon">&#128450;</div><div class="ws-name">Data &amp; Integration</div><div class="ws-owner">Andrew Ehrlich</div><div class="ws-desc">Data access, pipelines, integrations</div></div>
+          <div class="ws-card"><div class="ws-icon">&#9989;</div><div class="ws-name">AI Tooling</div><div class="ws-owner">Daniel Trauner</div><div class="ws-desc">Risk, security, and controls</div></div>
+          <div class="ws-card"><div class="ws-icon">&#9878;</div><div class="ws-name">Legal &amp; Compliance</div><div class="ws-owner">Stewart Pomerantz / Holly Lambert / Geneva Kwok</div><div class="ws-desc">Legal review, compliance oversight</div></div>
+          <div class="ws-card"><div class="ws-icon">&#128227;</div><div class="ws-name">Change, Training &amp; Comms</div><div class="ws-owner">Diane Nikonchuk</div><div class="ws-desc">Adoption, comms, training</div></div>
+          <div class="ws-card"><div class="ws-icon">&#129309;</div><div class="ws-name">Vendor &amp; 3rd-Party</div><div class="ws-owner">Aaron Purewal</div><div class="ws-desc">Vendor intake and approvals</div></div>
+          <div class="ws-card"><div class="ws-icon">&#128640;</div><div class="ws-name">Use Case Delivery</div><div class="ws-owner">Jessie Wang</div><div class="ws-desc">Use case execution &amp; rollout</div></div>
+        </div>
+        <div class="section" style="margin-top:20px"><div class="section-header"><h2>Decision Rights Summary</h2></div><div class="section-body"><div class="decision-grid">
+          <div class="decision-card"><h4>ExCo</h4><p>Strategy, major funding, high-risk decisions</p></div>
+          <div class="decision-card" style="border-top-color:var(--teal)"><h4>SteerCo</h4><p>Portfolio management, stage gates, standards enforcement</p></div>
+          <div class="decision-card" style="border-top-color:var(--purple)"><h4>Project Team</h4><p>Build/run platform, deliver use cases, adoption &amp; reporting</p></div>
+        </div></div></div>
+      </div>
+
+      <!-- SLIDE 3: COMMUNICATIONS -->
+      <div class="slide" id="slide3">
+        <div class="page-header"><h1>Communications Plan</h1><p>Cadence, accountability, and program reporting artifacts.</p></div>
+        <div class="comms-grid">
+          <div class="comms-card"><span class="badge badge-blue">Executive Committee</span><h3>Quarterly</h3><ul><li>Firm-wide AI strategy</li><li>Resolve enterprise dependencies</li><li>Budget and planning</li></ul></div>
+          <div class="comms-card"><span class="badge badge-teal">Steering Committee</span><h3>Bi-Monthly</h3><ul><li>Program status and cross-workstream dependencies</li><li>AI use case prioritization</li></ul></div>
+          <div class="comms-card"><span class="badge badge-purple">CIO Update</span><h3>Bi-Weekly</h3><ul><li>Status update to Sponsor (Vikram Dewan)</li></ul></div>
+          <div class="comms-card"><span class="badge badge-dim">Workstream Update</span><h3>Weekly</h3><ul><li>Progress, risks, issues, dependencies</li></ul></div>
+        </div>
+        <div class="section" style="margin-top:24px"><div class="section-header"><h2>Program Documents</h2></div><div class="section-body"><div class="docs-grid">
+          <div class="doc-chip">Program Status Report</div><div class="doc-chip">RAID Log</div><div class="doc-chip">AI Application Register</div>
+        </div></div></div>
+      </div>
+
+      <!-- SLIDE 4: USE CASES -->
+      <div class="slide" id="slide4">
+        <div class="page-header"><h1>Use Case Tracker</h1><p>All active AI use cases across the firm — status, stakeholders, and assigned engineers. <span class="badge badge-dim" style="vertical-align:middle">Owner: Jessie</span></p></div>
+
+        <!-- USE CASE METRICS -->
+        <div class="kpi-row">
+          <div class="kpi-card"><div class="kpi-label">Deployed</div><div class="kpi-value" style="color:var(--green)">4</div><div class="kpi-sub">In production</div></div>
+          <div class="kpi-card"><div class="kpi-label">UAT</div><div class="kpi-value" style="color:var(--accent)">12</div><div class="kpi-sub">User acceptance testing</div></div>
+          <div class="kpi-card"><div class="kpi-label">In Dev</div><div class="kpi-value" style="color:var(--purple)">8</div><div class="kpi-sub">Active development</div></div>
+          <div class="kpi-card"><div class="kpi-label">Requirements</div><div class="kpi-value" style="color:var(--yellow)">3</div><div class="kpi-sub">Gathering requirements</div></div>
+        </div>
+
+        <!-- BY DEPARTMENT -->
+        <div class="section" style="margin-bottom:20px">
+          <div class="section-header"><h2>Use Cases by Department</h2></div>
+          <div class="section-body" style="display:flex;flex-wrap:wrap;gap:8px">
+            <span class="badge badge-dim" style="font-size:12px;padding:6px 12px">IT / GIS — 7</span>
+            <span class="badge badge-dim" style="font-size:12px;padding:6px 12px">Legal — 3</span>
+            <span class="badge badge-dim" style="font-size:12px;padding:6px 12px">Risk — 2</span>
+            <span class="badge badge-dim" style="font-size:12px;padding:6px 12px">Treasury — 2</span>
+            <span class="badge badge-dim" style="font-size:12px;padding:6px 12px">HR — 1</span>
+            <span class="badge badge-dim" style="font-size:12px;padding:6px 12px">Marketing / HR — 2</span>
+            <span class="badge badge-dim" style="font-size:12px;padding:6px 12px">IB (Munis) — 1</span>
+            <span class="badge badge-dim" style="font-size:12px;padding:6px 12px">Research — 1</span>
+            <span class="badge badge-dim" style="font-size:12px;padding:6px 12px">Fixed Income — 1</span>
+            <span class="badge badge-dim" style="font-size:12px;padding:6px 12px">Infrastructure — 1</span>
+            <span class="badge badge-dim" style="font-size:12px;padding:6px 12px">SecOps — 1</span>
+            <span class="badge badge-dim" style="font-size:12px;padding:6px 12px">Controllers — 1</span>
+            <span class="badge badge-dim" style="font-size:12px;padding:6px 12px">T&amp;E — 1</span>
+            <span class="badge badge-dim" style="font-size:12px;padding:6px 12px">Firmwide — 3</span>
+          </div>
+        </div>
+
+        <div class="section">
+          <div class="section-header"><h2>Use Case Status</h2><span style="font-size:12px;color:var(--text-muted)">UAT and production timelines subject to change based on UAT results and stakeholder availability.</span></div>
+          <div style="overflow-x:auto"><table><thead><tr><th>Use Case</th><th>Description</th><th>Connectors</th><th>Status</th><th>Dept</th><th>Stakeholder(s)</th><th>Engineer</th></tr></thead><tbody>
+            <tr><td><strong>Trade Surveillance</strong></td><td>AI-powered surveillance — alert logs, PSI detection, volatility ranking, news linkage</td><td>Web Search</td><td><span class="badge badge-blue">UAT</span></td><td>Legal</td><td>Anu Willoughby</td><td>Marija Eric</td></tr>
+            <tr><td><strong>BlueMatrix AssistBot</strong></td><td>Research BlueMatrix Support SharePoint for user help</td><td>SharePoint</td><td><span class="badge badge-blue">UAT</span></td><td>Research</td><td>Alana Crank, Ethan Geismar</td><td>Marija Eric</td></tr>
+            <tr><td><strong>NAV &amp; Performance</strong></td><td>Production data based on input scenarios</td><td>N/A</td><td><span class="badge badge-yellow">Requirements</span></td><td>Risk</td><td>Sharon Tanner</td><td>Juan / Arthur</td></tr>
+            <tr><td><strong>Muni RFP Generator</strong></td><td>Tailored RFP responses using historical proposals &amp; templates</td><td>NAS, Web Search</td><td><span class="badge badge-blue">UAT</span></td><td>IB (Munis)</td><td>W. Torsiglieri, K. Chalke, K. Arnone</td><td>Neha</td></tr>
+            <tr><td><strong>Swap Dealer</strong></td><td>Regulatory QA prototype for Swap AP validation</td><td>N/A</td><td><span class="badge badge-blue">UAT</span></td><td>Legal</td><td>Anu Willoughby</td><td>Brendan</td></tr>
+            <tr><td><strong>GETS Support</strong></td><td>JefAI chatbot for GETS support topics</td><td>Confluence</td><td><span class="badge badge-purple">In Dev</span></td><td>—</td><td>—</td><td>Neha</td></tr>
+            <tr><td><strong>AskJEF for HR</strong></td><td>HR policies and procedures support</td><td>SharePoint, OracleHCM</td><td><span class="badge badge-purple">In Dev</span></td><td>HR</td><td>N. Pearson, J. Barkin</td><td>—</td></tr>
+            <tr><td><strong>AskJEF for T&amp;E</strong></td><td>Travel &amp; expense policies with nightly updates</td><td>ServiceNow</td><td><span class="badge badge-blue">UAT</span></td><td>T&amp;E</td><td>Emily Wong</td><td>—</td></tr>
+            <tr><td><strong>AskJEF for ServiceDesk</strong></td><td>IT issues and real-time technical support</td><td>ServiceNow</td><td><span class="badge badge-blue">UAT</span></td><td>IT Support</td><td>Colin Perry</td><td>—</td></tr>
+            <tr><td><strong>AskJEF for GIS</strong></td><td>GIS policies and security compliance guidance</td><td>ServiceNow</td><td><span class="badge badge-blue">UAT</span></td><td>GIS (IT)</td><td>Jerry Kowalski</td><td>—</td></tr>
+            <tr><td><strong>AskJEF for Marketing</strong></td><td>Marketing/branding guidelines and campaign support</td><td>SharePoint, Web</td><td><span class="badge badge-blue">UAT</span></td><td>Marketing</td><td>Kevin Brucato</td><td>—</td></tr>
+            <tr><td><strong>AskJEF for OneJef</strong></td><td>General OneJef information access</td><td>N/A</td><td><span class="badge badge-blue">UAT</span></td><td>Marketing/HR</td><td>Kevin Brucato</td><td>—</td></tr>
+            <tr><td><strong>AskJEF Router</strong></td><td>AI agent with long-term memory, citations, routing to sub-agents</td><td>N/A</td><td><span class="badge badge-blue">UAT</span></td><td>—</td><td>—</td><td>—</td></tr>
+            <tr><td><strong>Treasury Payment Confirmation</strong></td><td>Payment confirmation agent — potentially 900 users</td><td>Swift, GTMS</td><td><span class="badge badge-yellow">Requirements</span></td><td>Treasury</td><td>Barbara Senechal</td><td>—</td></tr>
+            <tr><td><strong>OpsRisk Reporting Agent</strong></td><td>Risk Events, KRI Performance, Open Actions, Emerging Themes</td><td>ServiceNow</td><td><span class="badge badge-yellow">Requirements</span></td><td>Risk</td><td>B. Mao, B. Curtin, A. Samandar</td><td>Tushar, Nuri</td></tr>
+            <tr><td><strong>Finance Doc Review (10K/10Q)</strong></td><td>Automation to reduce manual effort in SEC filings</td><td>N/A</td><td><span class="badge badge-green">Deployed</span></td><td>Controllers</td><td>Kishan Thanawala</td><td>—</td></tr>
+            <tr><td><strong>Treasury Tech Confluence</strong></td><td>Agent connected to Treasury Tech Confluence for Q&amp;A</td><td>Confluence</td><td><span class="badge badge-blue">UAT</span></td><td>Treasury Tech</td><td>—</td><td>—</td></tr>
+            <tr><td><strong>ION Support</strong></td><td>First-line troubleshooting for ION platform</td><td>Confluence</td><td><span class="badge badge-green">Deployed</span></td><td>Fixed Income</td><td>—</td><td>—</td></tr>
+            <tr><td><strong>Network Team</strong></td><td>Network monitoring and troubleshooting</td><td>Splunk, Elastic</td><td><span class="badge badge-green">Deployed</span></td><td>Infrastructure</td><td>Mark Leon-Soon</td><td>—</td></tr>
+            <tr><td><strong>SecOps Agent</strong></td><td>Security operations automation</td><td>ServiceNow</td><td><span class="badge badge-green">Deployed</span></td><td>SecOps</td><td>Howard Berkis</td><td>—</td></tr>
+            <tr><td><strong>JefPolicy</strong></td><td>Policy Q&amp;A for JefPolicy code base</td><td>Database, RestAPI</td><td><span class="badge badge-teal">Demo</span></td><td>Firmwide</td><td>J. Kowalski / Andrew Ehrlich</td><td>Rohit</td></tr>
+            <tr><td><strong>Vulnerability Agent</strong></td><td>Real-time vulnerability queries</td><td>ServiceNow</td><td><span class="badge badge-purple">In Dev</span></td><td>All IT</td><td>Jaminson Benvenuto</td><td>Simona</td></tr>
+            <tr><td><strong>Metis Security Agent</strong></td><td>Query GIT security data lake</td><td>Database</td><td><span class="badge badge-purple">In Dev</span></td><td>GIS (IT)</td><td>Jerry Kowalski</td><td>Simona</td></tr>
+            <tr><td><strong>JRequest Agent</strong></td><td>Support for JRequest queries, submissions, approvals</td><td>ServiceNow, DB, REST</td><td><span class="badge badge-purple">In Dev</span></td><td>Firmwide</td><td>Sudhi</td><td>Rohit / Simona</td></tr>
+            <tr><td><strong>Change Mgmt Agent</strong></td><td>Evaluate change requests and add context</td><td>ServiceNow</td><td><span class="badge badge-purple">In Dev</span></td><td>Change Mgmt</td><td>Bernie Ferrari</td><td>Tushar / Varun</td></tr>
+            <tr><td><strong>Reg Tech Confluence</strong></td><td>Interactive chatbot for Regulatory Tech Confluence</td><td>Confluence</td><td><span class="badge badge-purple">In Dev</span></td><td>IT</td><td>Alexandra Has</td><td>Danica Trajic</td></tr>
+          </tbody></table></div>
+        </div>
+      </div>
+
+      <!-- SLIDE 5: JEFAI PLATFORM ROADMAP -->
+      <div class="slide" id="slide5">
+        <div class="page-header"><h1>JefAI Platform &amp; Engineering</h1><p>Monthly feature roadmap — demonstrating wins month over month. <span class="badge badge-dim" style="vertical-align:middle">Owner: Jessie</span></p></div>
+
+        <!-- Current Connectors -->
+        <div class="section" style="margin-bottom:20px">
+          <div class="section-header"><h2>Current Connectors</h2></div>
+          <div class="section-body" style="display:flex;flex-wrap:wrap;gap:8px">
+            <span class="badge badge-dim">Web Scraping</span><span class="badge badge-dim">Jefferies.com &amp; Brand Center</span><span class="badge badge-dim">Text to SQL</span><span class="badge badge-dim">Confluence</span><span class="badge badge-dim">NAS Drive</span><span class="badge badge-dim">SharePoint</span><span class="badge badge-dim">ServiceNow</span><span class="badge badge-dim">IBOND</span><span class="badge badge-dim">Falcon CrowdStrike</span><span class="badge badge-dim">Splunk</span><span class="badge badge-dim">MS Defender</span>
+          </div>
+        </div>
+
+        <!-- JANUARY -->
+        <div class="roadmap-month">
+          <div class="roadmap-month-header"><h3>January 2026</h3><span class="badge badge-green">Delivered</span></div>
+          <div class="roadmap-items">
+            <div class="roadmap-item"><h5>Voice to Text</h5><p>Speech-to-text capability enabling hands-free interaction with JefAI platform</p><div class="ri-detail">Allows users to interact with JefAI using voice commands, improving accessibility and workflow efficiency</div></div>
+            <div class="roadmap-item"><h5>Image Generation</h5><p>AI-powered visual content creation for presentations and marketing materials</p><div class="ri-detail">Generate custom images, charts, and visual assets directly within the platform</div></div>
+            <div class="roadmap-item"><h5>Read PDF Link</h5><p>Allows users to provide PDF links for direct processing without manual upload</p><div class="ri-detail">Streamlines document analysis workflow by accepting web-based PDF URLs</div></div>
+            <div class="roadmap-item"><h5>NAS Drive Connector</h5><p>Allows JefAI to securely connect to network attached storage systems</p><div class="ri-detail">Please connect with the team to get more info and have your connector setup</div></div>
+            <div class="roadmap-item"><h5>SharePoint Connector</h5><p>Integration with SharePoint wiki pages and document libraries for seamless collaboration</p><div class="ri-detail">Please connect with the team to get more info and have your connector setup</div></div>
+            <div class="roadmap-item"><h5>Expanded File Support</h5><p>Added support for MSG and email file formats</p><div class="ri-detail">Enhanced file compatibility including Microsoft Outlook messages</div></div>
+          </div>
+        </div>
+
+        <!-- FEBRUARY -->
+        <div class="roadmap-month">
+          <div class="roadmap-month-header"><h3>February 2026</h3><span class="badge badge-blue">In Progress</span></div>
+          <div class="roadmap-items">
+            <div class="roadmap-item"><h5>JefAI Platform Upgrade</h5><p>Native function calling support with comprehensive testing for enhanced platform capabilities</p><div class="ri-detail">Core platform enhancement enabling advanced AI interactions and improved system integration</div></div>
+            <div class="roadmap-item"><h5>Generalist Agent &rarr; GPT-5.2</h5><p>Enhanced reasoning capabilities through advanced language model upgrade</p></div>
+            <div class="roadmap-item"><h5>Communications Agent &rarr; Claude 4.5</h5><p>Superior content creation through next-generation language model</p></div>
+            <div class="roadmap-item"><h5>Azure Search Integration</h5><p>Enhanced web search tool for increased accuracy rates</p></div>
+            <div class="roadmap-item"><h5>Export File Function</h5><p>Enable users to export content to Word document format</p><div class="ri-detail">Direct export functionality for reports and analyses to Microsoft Word</div></div>
+            <div class="roadmap-item"><h5>Agent Sharing</h5><p>Collaborative sharing capabilities for JefAI agents. Share your agents with members of your team</p><div class="ri-detail">Enable secure content sharing with Teams integration</div></div>
+          </div>
+        </div>
+
+        <!-- MARCH -->
+        <div class="roadmap-month">
+          <div class="roadmap-month-header"><h3>March 2026</h3><span class="badge badge-purple">Pipeline</span></div>
+          <div class="roadmap-items">
+            <div class="roadmap-item"><h5>AskJef Series</h5><p>Specialized AI agents with long-term memory and citation capabilities</p><div class="ri-detail">Comprehensive suite of specialized agents with cross-agent memory and intelligent routing</div></div>
+            <div class="roadmap-item"><h5>T&amp;E Agent</h5><p>Travel and expense policies with nightly updates</p></div>
+            <div class="roadmap-item"><h5>ServiceDesk Agent</h5><p>IT issues and technical support with automated updates</p></div>
+            <div class="roadmap-item"><h5>HR Agent</h5><p>Human resources policies and procedures support</p></div>
+            <div class="roadmap-item"><h5>AskJef Agent</h5><p>Specialized AI agent with long-term memory, citation capabilities, and domain-specific routing</p></div>
+            <div class="roadmap-item"><h5>Marketing Agent</h5><p>Marketing guidelines and campaigns support</p></div>
+            <div class="roadmap-item"><h5>AI Lab Catalogue</h5><p>Centralized platform for AI experimentation and tool discovery</p><div class="ri-detail">Innovation hub for testing new AI capabilities and managing experimental features</div></div>
+          </div>
+        </div>
+
+        <!-- APRIL -->
+        <div class="roadmap-month">
+          <div class="roadmap-month-header"><h3>April 2026</h3><span class="badge badge-dim">Planned</span></div>
+          <div class="roadmap-items">
+            <div class="roadmap-item"><h5>Structured Data Agent</h5><p>Intelligently process and analyze structured data formats</p><div class="ri-detail">Advanced data processing for databases, spreadsheets, and structured content analysis</div></div>
+            <div class="roadmap-item"><h5>Browser Agent</h5><p>Automated web browsing and data extraction capabilities</p><div class="ri-detail">Intelligent web automation for data collection and web-based task execution</div></div>
+            <div class="roadmap-item"><h5>LLM Sandbox</h5><p>No-code environment for safe AI experimentation</p><div class="ri-detail">Secure testing environment for experimenting with different AI models</div></div>
+            <div class="roadmap-item"><h5>AI Hub Integration</h5><p>Connection framework linking various AI agents and tools</p><div class="ri-detail">Centralized hub connecting all AI capabilities with seamless integration</div></div>
+            <div class="roadmap-item"><h5>JefAI Mobile Version</h5><p>Chat and brainstorm JefAI on the go with your Jefferies phone</p></div>
+          </div>
+        </div>
+
+        <!-- MAY -->
+        <div class="roadmap-month">
+          <div class="roadmap-month-header"><h3>May 2026</h3><span class="badge badge-dim">Planned</span></div>
+          <div class="roadmap-items">
+            <div class="roadmap-item"><h5>JRequest Agent</h5><p>Allow user to query and submit JRequest directly</p></div>
+            <div class="roadmap-item"><h5>JefAI Widget</h5><p>Allows a JefAI agent to be embedded into an application. Enable user the freedom to chat with JefAI while browsing and operating on different web browser.</p></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SLIDE 6: VENDORS -->
+      <div class="slide" id="slide6">
+        <div class="page-header"><h1>Vendor &amp; Third-Party Management</h1><p>Gatekeeper workflow, vendor approvals, pipeline, and key policies. <span class="badge badge-dim" style="vertical-align:middle">Owner: Aaron</span></p></div>
+        <div class="section"><div class="section-header"><h2>Target Workflow (Sequential)</h2></div><div class="section-body"><div class="flow-row">
+          <div class="flow-step" style="border-top:2px solid var(--accent)"><h4>AI Review</h4><p>Efficacy + Technical AI Specs</p></div>
+          <div class="flow-step" style="border-top:2px solid var(--teal)"><h4>Security</h4><p>Pen tests, SOC2, architecture</p></div>
+          <div class="flow-step" style="border-top:2px solid var(--purple)"><h4>Legal</h4><p>AI clauses, compliance</p></div>
+          <div class="flow-step" style="border-top:2px solid var(--green)"><h4>Vendor Risk</h4><p>Final sign-off</p></div>
+        </div></div></div>
+        <div class="section"><div class="section-header"><h2>Critical Policies</h2></div><div class="section-body"><ul>
+          <li><strong>MNPI Policy:</strong> MNPI never in public/web tools unless Jefferies AWS/Azure.</li>
+          <li><strong>Legal Default:</strong> "No MNPI" unless technical controls confirmed.</li>
+          <li><strong>PoC Standards:</strong> Up to 6 months; vendors want full contracts &rarr; double-work for Legal.</li>
+        </ul></div></div>
+        <div class="section"><div class="section-header"><h2>Approved — Pending Implementation</h2><span class="badge badge-green">Last Month</span></div>
+          <div style="overflow-x:auto"><table><thead><tr><th>Vendor</th><th>Business Group</th><th>Purpose</th><th>Status</th><th>Next Steps</th><th>Owner</th></tr></thead><tbody>
+            <tr><td><strong>F2 AI</strong></td><td>JFin</td><td>AI for private markets / data room analysis</td><td><span class="badge badge-green">Approved</span></td><td>Finalize legal terms; MNPI clause approved by Andrew</td><td>Amanda</td></tr>
+            <tr><td><strong>ChatGPT Enterprise</strong></td><td>Research</td><td>Enterprise gen-AI for research workflows</td><td><span class="badge badge-green">Approved</span></td><td>Bake-off vs Alpha Sense vs Claude</td><td>Ethan Geismer</td></tr>
+            <tr><td><strong>Claude for Finance</strong></td><td>Research</td><td>Finance-focused LLM for research</td><td><span class="badge badge-green">Approved</span></td><td>POC with mock data; assess live data request</td><td>Ethan Geismer</td></tr>
+            <tr><td><strong>Snowflake AI Agents</strong></td><td>Data Platform</td><td>Agentic model access within Snowflake</td><td><span class="badge badge-green">Approved</span></td><td>Confirm conditional approval communication</td><td>Aaron</td></tr>
+            <tr><td><strong>Splunk AI</strong></td><td>Security / Ops</td><td>Log analysis with external LLMs via API keys</td><td><span class="badge badge-green">Approved</span></td><td>Confirm conditional approval communication</td><td>Aaron</td></tr>
+            <tr><td><strong>Ender Labs</strong></td><td>Engineering / Security</td><td>SAST scanning in-environment</td><td><span class="badge badge-green">Approved</span></td><td>Run 6-month POC</td><td>Dan Tran</td></tr>
+            <tr><td><strong>TrustLogix</strong></td><td>InfoSec</td><td>Security add-on for existing tool</td><td><span class="badge badge-green">Approved</span></td><td>Operationalize add-on</td><td>Sudhi Rao</td></tr>
+            <tr><td><strong>Spacelift</strong></td><td>Engineering / DevOps</td><td>IaC automation with BYOK</td><td><span class="badge badge-green">Approved</span></td><td>BYOK setup and onboarding</td><td>Kamil Falana</td></tr>
+            <tr><td><strong>SingleTrack</strong></td><td>MScience</td><td>Capital markets CRM on Salesforce</td><td><span class="badge badge-green">Approved</span></td><td>Follow up on privacy and InfoSec concerns</td><td>Aaron</td></tr>
+          </tbody></table></div>
+        </div>
+        <div class="section"><div class="section-header"><h2>Currently In Review</h2><span class="badge badge-yellow">10 Active</span></div>
+          <div style="overflow-x:auto"><table><thead><tr><th>Vendor</th><th>Business Group</th><th>Purpose</th><th>Status</th><th>Next Steps</th><th>Owner</th></tr></thead><tbody>
+            <tr><td><strong>Itential</strong></td><td>IT</td><td>Network automation/orchestration</td><td><span class="badge badge-yellow">In Review</span></td><td>Aaron to review/approve</td><td>Aaron</td></tr>
+            <tr><td><strong>Figma Make AI</strong></td><td>UX</td><td>AI features in Figma</td><td><span class="badge badge-yellow">In Review</span> <span class="badge badge-ready">&#10003; Meets Approval Criteria</span></td><td>Finalize image gen policy with Legal by 2/19</td><td>Legal</td></tr>
+            <tr><td><strong>Canva AI</strong></td><td>Marketing</td><td>Image generation tooling</td><td><span class="badge badge-yellow">In Review</span> <span class="badge badge-ready">&#10003; Meets Approval Criteria</span></td><td>Legal review for image generation policy</td><td>Legal</td></tr>
+            <tr><td><strong>FIS (Investran)</strong></td><td>JFin</td><td>Investment management platform</td><td><span class="badge badge-yellow">In Review</span></td><td>Initial technical/efficacy review</td><td>Aaron</td></tr>
+            <tr><td><strong>Mailchimp</strong></td><td>M Science</td><td>Marketing/CRM automation</td><td><span class="badge badge-yellow">In Review</span></td><td>Follow up on missing details</td><td>Aaron</td></tr>
+            <tr><td><strong>Bloomberg GenAI</strong></td><td>Terminal/Data</td><td>GenAI within Bloomberg terminal</td><td><span class="badge badge-yellow">In Review</span></td><td>Await questionnaire completion</td><td>Requester</td></tr>
+            <tr><td><strong>StreamOS</strong></td><td>Greg Ochojski</td><td>AI finance platform — trains on Jef data</td><td><span class="badge badge-yellow">In Review</span></td><td>Schedule mtg; assess training opt-out</td><td>Aaron</td></tr>
+            <tr><td><strong>Vercel</strong></td><td>MScience</td><td>Platform hosting and AI tooling</td><td><span class="badge badge-yellow">In Review</span></td><td>Meeting with MScience on 2/11</td><td>Aaron</td></tr>
+            <tr><td><strong>Zendesk</strong></td><td>Research</td><td>Support platform (AI: OpenAI/Claude)</td><td><span class="badge badge-yellow">In Review</span></td><td>Hold pending LLM priority decision</td><td>Aaron</td></tr>
+            <tr><td><strong>QuantFox</strong></td><td>T. Larkman / F. Hart</td><td>Quant research tooling (France-based)</td><td><span class="badge badge-yellow">In Review</span></td><td>Confirm data sent and region risk</td><td>Aaron</td></tr>
+          </tbody></table></div>
+        </div>
+      </div>
+
+      <!-- SLIDE 7: TIMELINE -->
+      <div class="slide" id="slide7">
+        <div class="page-header"><h1>Timeline &amp; Appendix</h1><p>2025–2026 delivery GANTT, key milestones, and use case onboarding workflow.</p></div>
+        <div class="section"><div class="section-header"><h2>2025–2026 Delivery Timeline</h2></div><div class="section-body"><div class="gantt-wrapper"><div class="gantt-chart">
+          <div class="gantt-header"><span>Q1 '25</span><span>Q2 '25</span><span>Q3 '25</span><span>Q4 '25</span><span>Q1 '26</span><span>Q2 '26</span></div>
+          <div class="gantt-row"><div class="gantt-label">EU AI Act Compliance</div><div class="gantt-track"><div class="gantt-bar" style="left:0%;width:75%;background:linear-gradient(90deg,var(--accent),#3b6fd4)"></div></div></div>
+          <div class="gantt-row"><div class="gantt-label">AI Literacy Training</div><div class="gantt-track"><div class="gantt-bar" style="left:20%;width:55%;background:linear-gradient(90deg,var(--orange),#e07a1e)"></div></div></div>
+          <div class="gantt-row"><div class="gantt-label">SEC Review Prep</div><div class="gantt-track"><div class="gantt-bar" style="left:30%;width:35%;background:linear-gradient(90deg,var(--green),#20a97c)"></div></div></div>
+          <div class="gantt-row"><div class="gantt-label">Tool Inventory &amp; Classification</div><div class="gantt-track"><div class="gantt-bar" style="left:0%;width:40%;background:linear-gradient(90deg,var(--purple),#8764d8)"></div></div></div>
+          <div class="gantt-row"><div class="gantt-label">Platform Engineering</div><div class="gantt-track"><div class="gantt-bar" style="left:10%;width:70%;background:linear-gradient(90deg,var(--teal),#1aab9e)"></div></div></div>
+          <div class="gantt-row"><div class="gantt-label">Use Case Deployment</div><div class="gantt-track"><div class="gantt-bar" style="left:40%;width:50%;background:linear-gradient(90deg,var(--pink),#d84e9a)"></div></div></div>
+          <div class="gantt-row"><div class="gantt-label">Vendor Management</div><div class="gantt-track"><div class="gantt-bar" style="left:15%;width:60%;background:linear-gradient(90deg,var(--red),#d43b3b)"></div></div></div>
+        </div></div></div></div>
+        <div class="section"><div class="section-header"><h2>Key Milestones</h2></div><div class="section-body"><div class="milestone-grid">
+          <div class="milestone-item"><span class="milestone-date">Q3 2025</span><span class="milestone-text">Tool inventory and risk classification complete</span></div>
+          <div class="milestone-item"><span class="milestone-date">Mar 2026</span><span class="milestone-text">SEC review meeting</span></div>
+          <div class="milestone-item"><span class="milestone-date">Aug 2026</span><span class="milestone-text">Firm-wide AI literacy requirement deadline</span></div>
+          <div class="milestone-item"><span class="milestone-date">Ongoing</span><span class="milestone-text">Use case delivery and platform enhancements</span></div>
+        </div></div></div>
+        <div class="section"><div class="section-header"><h2>Use Case Onboarding Workflow</h2></div><div class="section-body"><div class="flow-row">
+          <div class="flow-step" style="border-top:2px solid var(--accent)"><h4>Step 1</h4><p>Request Submission</p></div>
+          <div class="flow-step" style="border-top:2px solid var(--purple)"><h4>Step 2</h4><p>Risk Assessment</p></div>
+          <div class="flow-step" style="border-top:2px solid var(--green)"><h4>Step 3</h4><p>Compliance Review</p></div>
+          <div class="flow-step" style="border-top:2px solid var(--orange)"><h4>Step 4</h4><p>Technical Validation</p></div>
+          <div class="flow-step" style="border-top:2px solid var(--pink)"><h4>Step 5</h4><p>Approval &amp; Deployment</p></div>
+        </div></div></div>
+        <div class="section"><div class="section-header"><h2>Key Considerations</h2></div><div class="section-body"><div class="three-col">
+          <div class="inner-card"><h4>Data Privacy</h4><p style="font-size:12.5px;color:var(--text-dim)">Ensure compliance with data protection regulations</p></div>
+          <div class="inner-card"><h4>Risk Classification</h4><p style="font-size:12.5px;color:var(--text-dim)">Determine appropriate risk tier for the use case</p></div>
+          <div class="inner-card"><h4>Business Justification</h4><p style="font-size:12.5px;color:var(--text-dim)">Clear ROI and business value</p></div>
+          <div class="inner-card"><h4>Technical Feasibility</h4><p style="font-size:12.5px;color:var(--text-dim)">Platform compatibility and integration requirements</p></div>
+          <div class="inner-card"><h4>Governance</h4><p style="font-size:12.5px;color:var(--text-dim)">Alignment with AI governance framework and controls</p></div>
+          <div class="inner-card"><h4>Training</h4><p style="font-size:12.5px;color:var(--text-dim)">User training and change management requirements</p></div>
+        </div></div></div>
+      </div>
+
+      <!-- SLIDE 8: VENDOR WORKFLOW -->
+      <div class="slide" id="slide8">
+        <div class="page-header"><h1>AI Vendor Approval Workflow</h1><p>Sequential gate-based review process — each step completes before the next begins. Click a stage to see detailed requirements.</p></div>
+        <div class="wf-pipeline">
+          <div class="wf-stage s-ai active" onclick="showWfPanel(0)"><div class="wf-stage-inner"><div class="wf-stage-num">01</div><div class="wf-stage-title">AI Review</div><div class="wf-stage-owner">Aaron Purewal (Gatekeeper)</div><div class="wf-stage-desc">Efficacy, technical AI specs, decision framework</div></div></div>
+          <div class="wf-arrow">&rarr;</div>
+          <div class="wf-stage s-sec" onclick="showWfPanel(1)"><div class="wf-stage-inner"><div class="wf-stage-num">02</div><div class="wf-stage-title">Security</div><div class="wf-stage-owner">Daniel / Alex</div><div class="wf-stage-desc">Pen tests, SOC2, architecture review</div></div></div>
+          <div class="wf-arrow">&rarr;</div>
+          <div class="wf-stage s-legal" onclick="showWfPanel(2)"><div class="wf-stage-inner"><div class="wf-stage-num">03</div><div class="wf-stage-title">Legal</div><div class="wf-stage-owner">Amanda + Adam (J-Fin)</div><div class="wf-stage-desc">Contract clauses, AI terms, regional compliance</div></div></div>
+          <div class="wf-arrow">&rarr;</div>
+          <div class="wf-stage s-vr" onclick="showWfPanel(3)"><div class="wf-stage-inner"><div class="wf-stage-num">04</div><div class="wf-stage-title">Vendor Risk</div><div class="wf-stage-owner">Final Sign-Off</div><div class="wf-stage-desc">Enterprise risk assessment &amp; approval</div></div></div>
+        </div>
+
+        <!-- Panel 0: AI Review -->
+        <div class="wf-detail-panel active" id="wfPanel0">
+          <div class="section"><div class="section-header"><h2>Stage 1 — AI Review (Gatekeeper)</h2><span class="badge badge-blue">Owner: Aaron Purewal</span></div><div class="section-body">
+            <p style="margin-bottom:16px">Nothing moves to Security, Legal, or Vendor Risk until this review is complete. Evaluates efficacy, technical AI specifications, business justification, and MNPI exposure.</p>
+            <div class="three-col">
+              <div class="inner-card" style="border-top:2px solid var(--green)"><h4 style="color:var(--green)">&#10003; Approve If</h4><ul><li>Clear business case</li><li>No obvious redundancy</li><li>Specs acceptable or vendor willing to use Jefferies endpoints</li><li>POC with defined scope &amp; data restrictions</li></ul></div>
+              <div class="inner-card" style="border-top:2px solid var(--yellow)"><h4 style="color:var(--yellow)">&#9208; Slow Down / Escalate If</h4><ul><li>Data hosted outside Jefferies AWS/Azure</li><li>Unclear subprocessors or restricted regions</li><li>Security hasn't reviewed AI functionality</li><li>MNPI exposure without controls</li></ul></div>
+              <div class="inner-card" style="border-top:2px solid var(--red)"><h4 style="color:var(--red)">&#10007; Deny If</h4><ul><li>Blatant redundancy ("we have 50 products that do this")</li><li>Poor/outdated technology</li><li>Clear compliance violations</li></ul></div>
+            </div>
+            <div class="callout callout-blue" style="margin-top:16px"><strong>Hany's guidance:</strong> "Don't hold back. Balance velocity vs. governance. No-brainers, approve them. Tell requesters we're building a new process — they may need to do retroactive actions later."</div>
+            <div class="inner-card" style="margin-top:16px;border-top:2px solid var(--accent)"><h4 style="color:var(--accent)">Gatekeeper Checklist</h4><ul class="wf-checklist">
+              <li><strong>Is Jefferies buying a tool/platform or licensing data?</strong> Different paths apply.</li>
+              <li><strong>Research the tool online</strong> — confirm a basic understanding of how it's being used.</li>
+              <li><strong>Has the tool been approved from the AI perspective?</strong> Check GEP/JEDI notes.</li>
+              <li><strong>Business justification:</strong> Why can't existing tools be used?</li>
+              <li><strong>LLM architecture:</strong> What models, where hosted, subprocessors?</li>
+              <li><strong>Data handling:</strong> Retention policy, encryption, BYOK capability?</li>
+              <li><strong>MNPI exposure:</strong> Does data leave Jefferies AWS/Azure?</li>
+              <li><strong>Peer adoption:</strong> Used by Goldman, JPM, or Morgan Stanley?</li>
+              <li><strong>Geographic restrictions:</strong> Users in mainland China? Flag for AI SME.</li>
+              <li><strong>What countries will JEF users be located in?</strong> Check DPA requirements if outside US.</li>
+            </ul></div>
+            <div class="inner-card" style="margin-top:12px;border-top:2px solid var(--orange)"><h4 style="color:var(--orange)">Regulatory &amp; Audit Context</h4><ul>
+              <li>SEC and global regulators incoming (Dubai already painful)</li><li>Regulators: "Tell us how you're using every AI-enabled software"</li><li>Australian regulator audit inquiry in progress</li><li>Need clear accountability for AI outcomes</li><li>Annual recertification: unchanged usage? No additional data?</li><li>Priority: stop new request leakage, then document existing tools</li>
+            </ul><div class="callout callout-yellow" style="margin-top:12px"><strong>Watch Out:</strong> POC contract friction, scope creep into Legal, questionnaire sign-off, and document everything for audit readiness.</div></div>
+          </div></div>
+        </div>
+
+        <!-- Panel 1: Security -->
+        <div class="wf-detail-panel" id="wfPanel1">
+          <div class="section"><div class="section-header"><h2>Stage 2 — Security Review</h2><span class="badge badge-teal">Owner: Daniel / Alex</span></div><div class="section-body">
+            <p style="margin-bottom:16px">After AI Review approval, the vendor proceeds to Security for technical security assessment. Aaron provides security notes and conditions from Stage 1.</p>
+            <div class="inner-card" style="border-top:2px solid var(--teal)"><h4 style="color:var(--teal)">Security Review Scope</h4><ul class="wf-checklist">
+              <li><strong>Penetration testing</strong> — vendor infrastructure and application layer</li><li><strong>SOC2 Type II</strong> — current certification status and scope</li><li><strong>Architecture review</strong> — data flows, subprocessors, hosting locations</li><li><strong>FedRAMP authorization</strong> — if applicable for cloud services</li><li><strong>Encryption</strong> — in-transit and at-rest, customer-managed keys (BYOK)</li><li><strong>Access controls</strong> — admin-level model access, MFA, hardware key 2FA</li><li><strong>Network controls</strong> — egress restrictions, endpoint allowlisting</li>
+            </ul></div>
+            <div class="inner-card" style="margin-top:12px;border-top:2px solid var(--teal)"><h4 style="color:var(--teal)">Security Notes from AI Review (Passed Forward)</h4><p style="font-size:12.5px;margin-bottom:10px">Standard conditions Aaron attaches when passing to Security:</p><div class="two-col">
+              <div class="inner-card"><h4>Vendor SaaS / Hosted Tool</h4><ul><li>Dedicated tenant requirement</li><li>BYOK support</li><li>Zero-day retention on LLMs</li><li>Disclosure of all third-party models</li><li>Filter enable/disable capability</li></ul></div>
+              <div class="inner-card"><h4>Jefferies-Hosted Tool</h4><ul><li>Must be hosted in Jefferies environment only</li><li>Vendor must redirect LLM API calls to Jefferies endpoints</li><li>No data egress outside firm infrastructure</li></ul></div>
+            </div></div>
+          </div></div>
+        </div>
+
+        <!-- Panel 2: Legal -->
+        <div class="wf-detail-panel" id="wfPanel2">
+          <div class="section"><div class="section-header"><h2>Stage 3 — Legal Review</h2><span class="badge badge-purple">Owner: Amanda Kline + Adam (J-Fin)</span></div><div class="section-body">
+            <p style="margin-bottom:16px">After AI and Security approval, Legal reviews contract terms. Amanda's AI Cheatsheet defines the standard questions, contracting terms, and sample clauses for AI vendor agreements.</p>
+            <div class="callout callout-blue" style="margin-bottom:16px"><strong>MNPI Default Policy:</strong> "No MNPI" for all AI contracts unless specific technical controls are confirmed. Complete prohibition on MNPI going outside the firm.</div>
+            <div class="inner-card" style="border-top:2px solid var(--purple)"><h4 style="color:var(--purple)">Legal Triage — "What Do I Do When I Receive an AI Contract?"</h4><div class="two-col" style="margin-top:10px">
+              <div class="inner-card"><h4>Jefferies Buying a Tool/Platform</h4><ul><li>Has it been approved from the AI perspective by Aaron Purewal?</li><li>Check GEP/JEDI for additional security terms</li><li>Is it vendor-hosted (SaaS) or Jefferies-hosted?</li><li>What countries will JEF users be located in?</li><li>If non-US users, check DPA requirements and server hosting location</li><li>If Anthropic agreement — flag for AI SME if users in unlisted countries</li></ul></div>
+              <div class="inner-card"><h4>Jefferies Buying Data from a Vendor</h4><ul><li>Does the vendor platform have AI functionality available?</li><li>Does the vendor use AI to collect or process the data?</li><li>What countries will JEF users be located in?</li></ul></div>
+            </div>
+            <div class="inner-card" style="margin-top:10px"><h4>Consultant / Managed Services (Not Staff Aug)</h4><ul><li>Is the vendor/consultant using AI tools to provide their services?</li><li>If yes — in their environment or Jefferies? Default: AI in JEF environments for JEF data.</li><li>Who operates the AI tools? Consultant only, Jefferies only, or both?</li></ul></div></div>
+            <div class="inner-card" style="margin-top:16px;border-top:2px solid var(--purple)"><h4 style="color:var(--purple)">AI Contracting Terms — Sample Clauses</h4><p style="font-size:12.5px;margin-bottom:12px;color:var(--text-dim)">Standard terms Legal should include in AI vendor agreements (from Amanda's cheatsheet):</p><div class="wf-terms-grid">
+              <div class="wf-term-card"><h5>1. Dedicated Tenant</h5><p>Vendor stands up a dedicated instance for Jefferies use only during the term.</p></div>
+              <div class="wf-term-card"><h5>2. Bring Your Own Key (BYOK)</h5><p>All customer data encrypted using a Jefferies-managed key. Vendor cannot decrypt without Jefferies authorization.</p></div>
+              <div class="wf-term-card"><h5>3. Zero-Day Retention</h5><p>LLM inputs/outputs not retained, stored, cached, or used for training. Transient processing only; deleted within 24 hours.</p></div>
+              <div class="wf-term-card"><h5>4. Third-Party Model Disclosure</h5><p>Vendor must disclose all LLM providers, model names, versions, hosting regions. 30 days' notice before any model change.</p></div>
+              <div class="wf-term-card"><h5>5. Security Filters</h5><p>Vendor provides admin controls for automated security filters on inputs/outputs. Filters cannot be disabled without Jefferies approval.</p></div>
+              <div class="wf-term-card"><h5>6. Hosting in JEF Environment</h5><p>Platform hosted, deployed, and operated solely within Jefferies-controlled cloud (AWS/Azure/VPC/on-prem). No data egress.</p></div>
+              <div class="wf-term-card"><h5>7. API Redirect</h5><p>All LLM API calls routed exclusively through Jefferies-designated endpoints ("Customer AI Endpoints"). No direct vendor-to-LLM calls.</p></div>
+              <div class="wf-term-card"><h5>8. MNPI Segregation</h5><p>Strict logical and physical segregation of Jefferies MNPI. Tenant isolation, need-to-know access, background checks for vendor staff.</p></div>
+            </div></div>
+            <div class="inner-card" style="margin-top:16px;border-top:2px solid var(--purple)"><h4 style="color:var(--purple)">Additional Agreement Provisions</h4><ul>
+              <li><strong>MNPI upload restrictions:</strong> JEF business teams not permitted to upload MNPI — this is an internal guardrail; exceptions need Compliance + IT Sec approval</li>
+              <li><strong>MNPI segregation by vendor:</strong> Whether vendor can actually segregate MNPI depends on architecture — must be verified</li>
+              <li><strong>Vendor audit/governance:</strong> Performance benchmarks, bias and risk assessment, audit rights</li>
+              <li><strong>Termination rights (model changes):</strong> If vendor changes model providers, functionality, hosting locations</li>
+              <li><strong>Termination rights (risk/compliance):</strong> If JEF determines vendor AI practices pose reputational risk or compromise security/regulatory compliance</li>
+              <li><strong>Data retention variance:</strong> Check if LLM retention differs from the Information Security Addendum — vendors with third-party models may have different retention timelines</li>
+            </ul></div>
+            <div class="callout callout-yellow" style="margin-top:12px"><strong>POC Friction:</strong> Vendors increasingly want full contract negotiations upfront, creating double-work for Legal. Duration: up to 6 months (flexible).</div>
+          </div></div>
+        </div>
+
+        <!-- Panel 3: Vendor Risk -->
+        <div class="wf-detail-panel" id="wfPanel3">
+          <div class="section"><div class="section-header"><h2>Stage 4 — Vendor Risk (Final Sign-Off)</h2><span class="badge badge-green">Final Gate</span></div><div class="section-body">
+            <p style="margin-bottom:16px">After AI, Security, and Legal have all signed off, the vendor request moves to Vendor Risk for final enterprise risk assessment and approval.</p>
+            <div class="inner-card" style="border-top:2px solid var(--green)"><h4 style="color:var(--green)">Final Sign-Off Scope</h4><ul class="wf-checklist">
+              <li><strong>Enterprise risk classification</strong> — tier determination based on data sensitivity and business impact</li><li><strong>Compliance alignment</strong> — confirm adherence to Global Gen AI Policy and firm risk appetite</li><li><strong>Contractual completeness</strong> — all AI-specific clauses, MNPI protections, and termination rights in place</li><li><strong>Ongoing monitoring plan</strong> — annual recertification requirements defined</li><li><strong>Audit trail</strong> — documentation complete for SEC and regulatory review</li>
+            </ul></div>
+            <div class="inner-card" style="margin-top:12px;border-top:2px solid var(--green)"><h4 style="color:var(--green)">Post-Approval Requirements</h4><ul>
+              <li><strong>Annual recertification:</strong> "Are you still using this the same way? No additional data?"</li><li><strong>Change notifications:</strong> Vendor must notify 30 days before model or architecture changes</li><li><strong>Ongoing monitoring:</strong> Usage tracking, incident reporting, compliance review</li><li><strong>Hany cc'd</strong> on all approval/denial communications</li>
+            </ul></div>
+          </div></div>
+        </div>
+
+        <div class="section" style="margin-top:8px"><div class="section-header"><h2>Critical Policies (All Stages)</h2></div><div class="section-body"><div class="three-col">
+          <div class="inner-card" style="border-top:2px solid var(--red)"><h4 style="color:var(--red)">MNPI Policy</h4><p style="font-size:12.5px">MNPI is NEVER allowed in anything public or web-based unless within Jefferies' AWS or Azure instance. Complete prohibition on MNPI going outside the firm.</p></div>
+          <div class="inner-card" style="border-top:2px solid var(--purple)"><h4 style="color:var(--purple)">Legal Default</h4><p style="font-size:12.5px">"No MNPI" for all AI contracts unless specific technical controls are confirmed.</p></div>
+          <div class="inner-card" style="border-top:2px solid var(--orange)"><h4 style="color:var(--orange)">POC Standards</h4><p style="font-size:12.5px">Up to 6 months duration. Vendors increasingly want full contracts upfront — creates double-work for Legal.</p></div>
+        </div></div></div>
+      </div>
+
+    </main>
+  </div>
+  <script>
+    const slides = document.querySelectorAll('.slide');
+    const navItems = document.querySelectorAll('.nav-item');
+    const mobileButtons = document.querySelectorAll('.mobile-nav button');
+    function goToSlide(n) {
+      slides.forEach(s => s.classList.remove('active'));
+      navItems.forEach(b => b.classList.remove('active'));
+      mobileButtons.forEach(b => b.classList.remove('active'));
+      slides[n].classList.add('active');
+      navItems[n].classList.add('active');
+      if (mobileButtons[n]) mobileButtons[n].classList.add('active');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+    function toggleTheme() {
+      const html = document.documentElement;
+      const sw = document.getElementById('themeSwitch');
+      const label = document.getElementById('theme-label');
+      if (sw.checked) { html.setAttribute('data-theme','dark'); label.innerHTML='&#127769; Dark'; }
+      else { html.setAttribute('data-theme','light'); label.innerHTML='&#9728;&#65039; Light'; }
+    }
+    function showWfPanel(n) {
+      document.querySelectorAll('.wf-detail-panel').forEach(p => p.classList.remove('active'));
+      document.querySelectorAll('.wf-stage').forEach(s => s.classList.remove('active'));
+      document.getElementById('wfPanel'+n).classList.add('active');
+      document.querySelectorAll('.wf-stage')[n].classList.add('active');
+    }
+  </script>
+</body>
+</html>
