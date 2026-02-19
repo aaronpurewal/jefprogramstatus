@@ -113,7 +113,7 @@
     .badge-purple{background:rgba(167,139,250,0.1);color:var(--purple);border:1px solid rgba(167,139,250,0.25)}
     .badge-teal{background:rgba(45,212,191,0.1);color:var(--teal);border:1px solid rgba(45,212,191,0.25)}
     .badge-dim{background:rgba(255,255,255,0.04);color:var(--text-dim);border:1px solid var(--border)}
-    .badge-ready{background:rgba(52,211,153,0.08);color:var(--green);border:1px dashed var(--green-border);font-size:10px;margin-left:6px}
+    .badge-ready{background:rgba(52,211,153,0.08);color:var(--green);border:1px dashed var(--green-border);font-size:10px;margin-left:10px}
     .gov-grid{display:grid;grid-template-columns:1.3fr 0.7fr;gap:20px}
     .gov-card{background:var(--surface-2);border:1px solid var(--border-bright);border-radius:var(--radius);padding:20px;position:relative}
     .gov-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--accent);border-radius:var(--radius) var(--radius) 0 0}
@@ -542,12 +542,6 @@
         </div>
         <!-- Sub-page 0: Vendor Tracker -->
         <div class="vendor-subpage active" id="vendorSub0">
-        <div class="section"><div class="section-header"><h2>Target Workflow (Sequential)</h2></div><div class="section-body"><div class="flow-row">
-          <div class="flow-step" style="border-top:2px solid var(--accent)"><h4>AI Review</h4><p>Efficacy + Technical AI Specs</p></div>
-          <div class="flow-step" style="border-top:2px solid var(--teal)"><h4>Security</h4><p>Pen tests, SOC2, architecture</p></div>
-          <div class="flow-step" style="border-top:2px solid var(--purple)"><h4>Legal</h4><p>AI clauses, compliance</p></div>
-          <div class="flow-step" style="border-top:2px solid var(--green)"><h4>Vendor Risk</h4><p>Final sign-off</p></div>
-        </div></div></div>
         <div class="section"><div class="section-header"><h2>Critical Policies</h2></div><div class="section-body"><ul>
           <li><strong>MNPI Policy:</strong> MNPI never in public/web tools unless Jefferies AWS/Azure.</li>
           <li><strong>Legal Default:</strong> "No MNPI" unless technical controls confirmed.</li>
@@ -572,7 +566,7 @@
             <tr><td><strong>Figma Make AI</strong></td><td>UX</td><td>AI features in Figma</td><td><span class="badge badge-yellow">In Review</span> <span class="badge badge-ready">&#10003; Meets Approval Criteria</span></td><td>Finalize image gen policy with Legal by 2/19</td><td>Legal</td></tr>
             <tr><td><strong>Canva AI</strong></td><td>Marketing</td><td>Image generation tooling</td><td><span class="badge badge-yellow">In Review</span> <span class="badge badge-ready">&#10003; Meets Approval Criteria</span></td><td>Legal review for image generation policy</td><td>Legal</td></tr>
             <tr><td><strong>FIS (Investran)</strong></td><td>JFin</td><td>Investment management platform</td><td><span class="badge badge-yellow">In Review</span></td><td>Initial technical/efficacy review</td><td>Aaron</td></tr>
-            <tr><td><strong>Mailchimp</strong></td><td>M Science</td><td>Marketing/CRM automation</td><td><span class="badge badge-yellow">In Review</span></td><td>Follow up on missing details</td><td>Aaron</td></tr>
+            <tr><td><strong>Mailchimp</strong></td><td>M Science</td><td>Marketing/CRM automation</td><td><span class="badge badge-yellow">In Review</span></td><td>Follow up on missing details</td><td>Steve Suta</td></tr>
             <tr><td><strong>Bloomberg GenAI</strong></td><td>Terminal/Data</td><td>GenAI within Bloomberg terminal</td><td><span class="badge badge-yellow">In Review</span></td><td>Await questionnaire completion</td><td>Requester</td></tr>
             <tr><td><strong>StreamOS</strong></td><td>Greg Ochojski</td><td>AI finance platform — trains on Jef data</td><td><span class="badge badge-yellow">In Review</span></td><td>Schedule mtg; assess training opt-out</td><td>Aaron</td></tr>
             <tr><td><strong>Vercel</strong></td><td>MScience</td><td>Platform hosting and AI tooling</td><td><span class="badge badge-yellow">In Review</span></td><td>Meeting with MScience on 2/11</td><td>Aaron</td></tr>
